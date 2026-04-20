@@ -171,14 +171,14 @@ export default function Home() {
               Meet <span className={styles.gradient}>Anime AI</span>
             </h1>
             <p className={styles.heroSubtitle}>
-              Predict match outcomes, get AI-powered win probabilities,
-              and enjoy real-time anime commentary — all in one app.
-              Compete with friends and climb the global leaderboard.
+              AI-generated win probabilities for every fixture, plus a 3D
+              anime commentator who talks with you by voice during live
+              matches. Across 13 major competitions. No ads. No betting.
             </p>
             <div className={styles.heroCtas}>
               <a href="#download" className={styles.btnPrimary}>
                 <Smartphone size={18} />
-                Download for iOS
+                Download the App
               </a>
               <a href="#features" className={styles.btnSecondary}>
                 Learn More
@@ -186,61 +186,27 @@ export default function Home() {
             </div>
             <div className={styles.heroStats}>
               <div className={styles.stat}>
-                <strong>50K+</strong>
-                <span>Predictions Made</span>
+                <strong>13</strong>
+                <span>Competitions Covered</span>
               </div>
               <div className={styles.statDivider} />
               <div className={styles.stat}>
-                <strong>10K+</strong>
-                <span>Active Users</span>
+                <strong>10</strong>
+                <span>Welcome Credits</span>
               </div>
               <div className={styles.statDivider} />
               <div className={styles.stat}>
-                <strong>98%</strong>
-                <span>Data Accuracy</span>
+                <strong>iOS + Android</strong>
+                <span>Available Now</span>
               </div>
             </div>
           </div>
           <div className={styles.heroVisual}>
-            <div className={styles.phoneMockup}>
-              <div className={styles.phoneScreen}>
-                <div className={styles.phoneHeader}>
-                  <span className={styles.phoneLive}>● LIVE</span>
-                  <span>Argentina vs France</span>
-                </div>
-                <div className={styles.phoneScore}>
-                  <div className={styles.team}>
-                    <div className={styles.teamFlag}>🇦🇷</div>
-                    <span>ARG</span>
-                  </div>
-                  <div className={styles.scoreDisplay}>
-                    <span className={styles.scoreNum}>3</span>
-                    <span className={styles.scoreSep}>-</span>
-                    <span className={styles.scoreNum}>3</span>
-                  </div>
-                  <div className={styles.team}>
-                    <div className={styles.teamFlag}>🇫🇷</div>
-                    <span>FRA</span>
-                  </div>
-                </div>
-                <div className={styles.phoneProb}>
-                  <div className={styles.probBar}>
-                    <div className={styles.probFill} style={{ width: '45%' }} />
-                  </div>
-                  <div className={styles.probLabels}>
-                    <span>ARG 45%</span>
-                    <span>Draw 25%</span>
-                    <span>FRA 30%</span>
-                  </div>
-                </div>
-                <div className={styles.phoneComment}>
-                  <div className={styles.commentAvatar}>🎭</div>
-                  <div className={styles.commentBubble}>
-                    GOOOAL! What a strike! Mbappé equalizes with an absolute thunderbolt! 🔥
-                  </div>
-                </div>
-              </div>
-            </div>
+            <img
+              src="/hero.png"
+              alt="Victoria, the PlayByPlay Anime commentator, reacting to a live match"
+              className={styles.heroImage}
+            />
           </div>
         </div>
       </section>
