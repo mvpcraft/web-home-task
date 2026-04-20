@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import {
-  Zap, Trophy, BarChart3, MessageCircle, Shield, Mic, Globe,
+  Zap, Trophy, BarChart3, MessageCircle, Mic, Globe,
   ChevronDown, ChevronUp, Smartphone, Star, TrendingUp
 } from 'lucide-react'
 import styles from './Home.module.css'
