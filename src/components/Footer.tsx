@@ -1,7 +1,19 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import styles from './Footer.module.css'
 
 export default function Footer() {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const goToSection = (id: string) => (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (location.pathname === '/') {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      navigate(`/#${id}`)
+    }
+  }
+
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
@@ -19,10 +31,10 @@ export default function Footer() {
 
           <div className={styles.linkGroup}>
             <h4>Product</h4>
-            <Link to="/#features">Features</Link>
-            <Link to="/#how-it-works">How It Works</Link>
-            <Link to="/#faq">FAQ</Link>
-            <a href="#download">Download</a>
+            <a href="/#features" onClick={goToSection('features')}>Features</a>
+            <a href="/#how-it-works" onClick={goToSection('how-it-works')}>How It Works</a>
+            <a href="/#faq" onClick={goToSection('faq')}>FAQ</a>
+            <a href="/#download" onClick={goToSection('download')}>Download</a>
           </div>
 
           <div className={styles.linkGroup}>
@@ -34,7 +46,6 @@ export default function Footer() {
           <div className={styles.linkGroup}>
             <h4>Support</h4>
             <Link to="/contact">Contact Us</Link>
-            <a href="mailto:support@playbyplayai.org">Email Support</a>
           </div>
         </div>
 

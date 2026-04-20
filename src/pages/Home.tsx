@@ -1,69 +1,74 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import {
-  Zap, Trophy, Users, BarChart3, MessageCircle, Shield,
+  Zap, Trophy, BarChart3, MessageCircle, Shield, Mic, Globe,
   ChevronDown, ChevronUp, Smartphone, Star, TrendingUp
 } from 'lucide-react'
 import styles from './Home.module.css'
 
 const features = [
   {
-    icon: <BarChart3 size={28} />,
-    title: 'AI Win Probability',
-    description:
-      'Our AI analyzes head-to-head records, recent form, and team strength to deliver real-time win probabilities for every match. Know the odds before you predict.',
-  },
-  {
     icon: <MessageCircle size={28} />,
-    title: 'Anime AI Commentary',
+    title: 'Victoria, Your Anime Commentator',
     description:
-      'Experience matches like never before with a 3D anime avatar that reacts to goals, cards, and key moments with expressive, entertaining commentary in real time.',
+      'A fully-rigged 3D anime avatar who joins you in live-match commentary rooms. She speaks out loud in natural voice, her mouth syncs to every word, and her face shifts between excited, shocked, happy, sad, and tense as the action unfolds.',
   },
   {
-    icon: <Zap size={28} />,
-    title: 'Instant Predictions',
+    icon: <Mic size={28} />,
+    title: 'Talk Back With Your Voice',
     description:
-      'Predict match winners and exact scores with a single tap. Predictions lock when the match begins, keeping the competition fair for everyone.',
+      'Hold a two-way conversation while the match plays. Speak into your mic and Victoria listens, transcribes you in real time, and replies with her own voice — ask about a player, debate a decision, or just chat.',
+  },
+  {
+    icon: <BarChart3 size={28} />,
+    title: 'AI Win Probability + Analysis',
+    description:
+      'Tap any fixture for an AI-generated home / draw / away probability and a written breakdown of why — powered by our backend using live form and head-to-head data. Results are cached per match so re-opening is free.',
   },
   {
     icon: <Trophy size={28} />,
-    title: 'Global Leaderboard',
+    title: '13 Major Competitions',
     description:
-      'Climb the ranks with accurate predictions. Earn points based on correct outcomes and exact score matches. See how you stack up against fans worldwide.',
+      'Premier League, La Liga, Bundesliga, Serie A, Ligue 1, UEFA Champions League, Eredivisie, Primeira Liga, MLS, USL Championship, NWSL, UEFA Euro 2024, and the FIFA World Cup 2026 — all in one place.',
   },
   {
-    icon: <Users size={28} />,
-    title: 'Private Leagues',
+    icon: <Globe size={28} />,
+    title: 'Live Fixtures, Your Timezone',
     description:
-      'Create private leagues and invite friends with a simple code. Compete head-to-head in your own circle and crown a champion among your group.',
+      'Real-time scores, fixtures, and match events sourced from a professional football data provider. Pick your IANA timezone once and every kick-off time shows in your local clock. Filter matches by Europe, USA, or International.',
   },
   {
-    icon: <Shield size={28} />,
-    title: 'Live Match Data',
+    icon: <Zap size={28} />,
+    title: 'Credits, Not Subscriptions',
     description:
-      'Stay on top of every match with real-time scores, lineups, and match events. All data sourced from professional football APIs for pinpoint accuracy.',
+      'Every new account gets 10 free welcome credits. Top up in packs of 10, 50, 150 or 500 — credits never expire, there are no monthly fees, no ads, and no betting. Predictions cost 1 credit; commentary costs 2 credits to join plus 2 every 5 minutes.',
   },
 ]
 
 const howItWorks = [
   {
     step: '01',
-    title: 'Download & Sign Up',
-    description: 'Get the app from the App Store and create your free account in seconds.',
+    title: 'Sign Up, Get 10 Credits',
+    description:
+      'Create your account with an email, a username, and an emoji avatar. Set your timezone so kick-off times land right. No card, no subscription — 10 welcome credits drop in the moment you sign up.',
   },
   {
     step: '02',
-    title: 'Browse Matches',
-    description: 'See all upcoming fixtures with real-time data, stats, and AI win probabilities.',
+    title: 'Pick a Match',
+    description:
+      'Open the Matches tab to see every live and upcoming fixture across 13 competitions — Premier League, La Liga, Champions League, MLS, the World Cup 2026, and more. Filter by Europe, USA or International, or search by team name.',
   },
   {
     step: '03',
-    title: 'Make Your Predictions',
-    description: 'Predict match outcomes and exact scores before kickoff. Earn points for accuracy.',
+    title: 'Get the AI Read (1 Credit)',
+    description:
+      'Tap any upcoming fixture and ask for an AI prediction. Our backend analyses recent form and head-to-head history and gives you home / draw / away probabilities plus a written breakdown. Once generated, re-opening the same prediction is free.',
   },
   {
     step: '04',
-    title: 'Watch & Compete',
-    description: 'Enjoy anime commentary during matches, climb leaderboards, and challenge your friends.',
+    title: 'Watch Live With Victoria',
+    description:
+      'When a match kicks off, enter the commentary room (2 credits, then 2 every 5 min). Victoria greets the match, reacts to goals, cards and big moments in real time — and when you speak into your mic, she listens, transcribes you, and replies out loud.',
   },
 ]
 
@@ -116,27 +121,36 @@ const faqs = [
 
 const testimonials = [
   {
-    name: 'Marco R.',
-    role: 'Football Fan',
-    text: 'The anime commentary is hilarious and actually makes watching matches more fun. I love competing with my friends in our private league.',
+    name: 'Daniel Mercer',
+    role: 'Football Journalist',
+    text: 'The AI analysis has become part of my pre-match routine. The probabilities feel reasonable, and the written breakdown actually explains the reasoning instead of just printing a number.',
     rating: 5,
   },
   {
-    name: 'Sarah K.',
-    role: 'Casual Viewer',
-    text: 'I never thought I would get into football predictions, but the AI probabilities make it easy to get started. The avatar character is adorable.',
+    name: 'Priya Shah',
+    role: 'Product Designer',
+    text: 'Talking to Victoria while the match is live is a genuinely new experience. She reacts in real time, picks up on what I am saying, and the voice replies feel natural rather than scripted.',
     rating: 5,
   },
   {
-    name: 'James T.',
-    role: 'Sports Enthusiast',
-    text: 'Finally an app that combines real data with entertainment. The AI predictions are surprisingly accurate and the leaderboard keeps me coming back.',
+    name: 'Marcus Okafor',
+    role: 'Data Analyst',
+    text: 'I follow five leagues across Europe and the MLS. Having one app that covers all of them with clean fixtures, live scores, and accurate kick-off times in my timezone is a small thing I use every day.',
     rating: 5,
   },
 ]
 
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const location = useLocation()
+
+  useEffect(() => {
+    if (!location.hash) return
+    const id = location.hash.slice(1)
+    requestAnimationFrame(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    })
+  }, [location.hash])
 
   return (
     <>
@@ -236,7 +250,7 @@ export default function Home() {
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Everything You Need</h2>
           <p className={styles.sectionSubtitle}>
-            Powerful AI predictions, entertaining anime commentary, and social competition — all in your pocket.
+            AI predictions, a 3D anime commentator who talks with you, and live fixtures from 13 competitions — all in your pocket.
           </p>
           <div className={styles.featureGrid}>
             {features.map((f, i) => (
