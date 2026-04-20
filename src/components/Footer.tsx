@@ -24,8 +24,9 @@ export default function Footer() {
               <span className={styles.logoText}>PlayByPlay Anime</span>
             </div>
             <p className={styles.tagline}>
-              AI-powered football predictions with anime-style live commentary.
-              Predict, compete, and enjoy the beautiful game like never before.
+              AI-powered match predictions and a 3D anime commentator who watches
+              live football with you — in real time, by voice. Across 13 major
+              competitions.
             </p>
           </div>
 
