@@ -320,18 +320,20 @@ export default function Home() {
               <div className={styles.ctaOrb2} />
             </div>
             <TrendingUp size={48} className={styles.ctaIcon} />
-            <h2>Ready to Start Predicting?</h2>
+            <h2>Ready for the Next Kick-Off?</h2>
             <p>
-              Download PlayByPlay Anime and join thousands of fans making
-              predictions, competing in leagues, and enjoying AI commentary.
+              Download PlayByPlay Anime, claim your 10 welcome credits, and
+              meet Victoria in the commentary room when the next live match
+              begins. Available on iOS and Android.
             </p>
             <div className={styles.ctaButtons}>
               <a href="#" className={styles.btnPrimary}>
                 <Smartphone size={18} />
-                Download for iOS
+                Download on iOS
               </a>
               <a href="#" className={styles.btnAccent}>
-                Coming Soon on Android
+                <Smartphone size={18} />
+                Download on Android
               </a>
             </div>
           </div>
