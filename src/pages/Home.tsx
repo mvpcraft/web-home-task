@@ -70,43 +70,47 @@ const howItWorks = [
 const faqs = [
   {
     q: 'What is PlayByPlay Anime?',
-    a: 'PlayByPlay Anime is a mobile app that combines AI-powered football match predictions with anime-style live commentary. You can predict match outcomes, compete with friends in private leagues, and enjoy real-time AI commentary delivered by a 3D anime avatar during matches.',
+    a: 'PlayByPlay Anime is a mobile companion app for football fans. Meet Victoria, a 3D anime avatar who delivers real-time voice commentary during live matches, reacts to goals and key moments with expressive animations, and holds a two-way voice conversation with you. You can also request AI-powered win probabilities and match analysis for upcoming fixtures.',
   },
   {
-    q: 'How does the AI win probability work?',
-    a: 'Our AI engine analyzes three key factors: head-to-head records (40% weight), recent team form over the last 5 matches (40% weight), and overall team strength ratings (20% weight). These are combined to produce a percentage probability for each possible outcome — home win, draw, or away win.',
+    q: 'Who is Victoria?',
+    a: 'Victoria is the 3D anime avatar at the heart of the app. During live matches she speaks commentary out loud using natural voice, her mouth syncs to what she says, and her facial expressions shift between excited, shocked, happy, sad, and tense depending on the moment. You can also talk back to her — she listens, transcribes your voice, and responds in real time.',
+  },
+  {
+    q: 'How do AI match predictions work?',
+    a: 'When you open a fixture, you can request an AI prediction. Our backend analyses team form, head-to-head history, and live data from our football data provider, then generates win / draw / loss probabilities along with a written analysis explaining the reasoning. Each prediction costs 1 credit and is cached, so re-opening the same prediction later is free.',
+  },
+  {
+    q: 'Which leagues and competitions are covered?',
+    a: 'We cover 13 major competitions: the Premier League, La Liga, Bundesliga, Serie A, Ligue 1, UEFA Champions League, Eredivisie and Primeira Liga in Europe; MLS, USL Championship and NWSL in the US; plus UEFA Euro 2024 and the FIFA World Cup 2026. You can filter matches by region (Europe, USA, International).',
   },
   {
     q: 'Is the app free to use?',
-    a: 'The app is free to download and includes basic features. Premium features like AI win probability analysis, anime AI commentary, and advanced statistics use a credit system. You can purchase credits through in-app purchases. Credits never expire and can be used whenever you want.',
+    a: 'The app is free to download and every new account starts with 10 free welcome credits. Core features use a credit-based system: AI predictions cost 1 credit per match, and live commentary with Victoria costs 2 credits to start a session plus 2 credits every 5 minutes you stay in it. Credits are purchased via in-app purchase in packs of 10, 50, 150 or 500, and they never expire.',
   },
   {
-    q: 'What leagues and competitions are covered?',
-    a: 'At launch, we are focused on the FIFA World Cup and major international football tournaments. We plan to expand coverage to include the Premier League, La Liga, Champions League, and other top domestic leagues based on user demand.',
+    q: 'When can I use Victoria\u2019s live commentary?',
+    a: 'Live commentary is only available while a match is actually in progress — first half, half-time, second half, or extra time. Once a match is finished, the commentary room for that match closes. Upcoming matches are browsable, but you\u2019ll need to wait for kick-off before Victoria can join you.',
   },
   {
-    q: 'How do private leagues work?',
-    a: 'Any user can create a private league and share an invite code with friends. Members of a private league have their own separate leaderboard. It is a great way to compete with coworkers, family, or your friend group during major tournaments.',
+    q: 'Can I make a prediction before kick-off?',
+    a: 'Yes. You can request an AI prediction for any upcoming fixture. There is no scoring game or leaderboard attached — predictions are a decision aid and entertainment feature, not a bet or a fantasy competition.',
   },
   {
-    q: 'What is the anime AI commentary?',
-    a: 'Our anime AI commentary features a 3D VRM avatar character that delivers real-time reactions and analysis during matches. The avatar reacts to goals, red cards, halftime, and full-time with expressive animations and witty commentary. Think of it as having an enthusiastic anime character watching the match with you.',
-  },
-  {
-    q: 'How is my prediction scored?',
-    a: 'You earn 3 points for predicting the exact score, 1 point for predicting the correct outcome (win, draw, or loss) without the exact score, and 0 points for an incorrect prediction. Points accumulate on both the global leaderboard and any private leagues you have joined.',
-  },
-  {
-    q: 'When can I make a prediction?',
-    a: 'Predictions can be made any time before a match kicks off. Once the match begins, predictions are locked and cannot be changed. This ensures fair competition. We recommend making your predictions after reviewing the AI win probability to make informed choices.',
-  },
-  {
-    q: 'Is my data safe?',
-    a: 'Yes. We take your privacy seriously. We only collect the minimum data necessary to provide our services. Your prediction history and account data are stored securely. We never sell your personal information to third parties. See our Privacy Policy for full details.',
+    q: 'Does the app involve betting or gambling?',
+    a: 'No. PlayByPlay Anime does not accept, place, or facilitate any kind of wager. AI predictions are informational only, intended to enrich how you watch and discuss the match. The app is built purely as an entertainment companion.',
   },
   {
     q: 'Which platforms is the app available on?',
-    a: 'We are launching on iOS first, with Android support coming shortly after. A web-based companion experience is also planned for viewing leaderboards and league standings on desktop.',
+    a: 'PlayByPlay Anime is available on both iOS and Android from day one. Build targets are configured under the bundle ID com.playbyplay.anime for both stores.',
+  },
+  {
+    q: 'What do I need to sign up?',
+    a: 'Signing up takes an email address and a password. After that, you\u2019ll pick a timezone so match kick-off times display correctly for you, and you can customise your profile from the Profile tab at any time.',
+  },
+  {
+    q: 'Is my data safe?',
+    a: 'We only collect what we need to run your account, deliver commentary, and validate credit purchases (handled via RevenueCat receipt validation). We do not sell your personal information, and there are no ads. See our Privacy Policy for full details.',
   },
 ]
 

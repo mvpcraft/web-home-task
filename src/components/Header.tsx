@@ -30,7 +30,7 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.container}>
         <Link to="/" className={styles.logo}>
-          <div className={styles.logoIcon}>P×P</div>
+          <img src="/logo.png" alt="PlayByPlay Anime" className={styles.logoIcon} />
           <span className={styles.logoText}>PlayByPlay</span>
         </Link>
 

@@ -8,7 +8,7 @@ export default function Footer() {
         <div className={styles.grid}>
           <div className={styles.brand}>
             <div className={styles.logo}>
-              <div className={styles.logoIcon}>P×P</div>
+              <img src="/logo.png" alt="PlayByPlay Anime" className={styles.logoIcon} />
               <span className={styles.logoText}>PlayByPlay Anime</span>
             </div>
             <p className={styles.tagline}>
@@ -34,7 +34,7 @@ export default function Footer() {
           <div className={styles.linkGroup}>
             <h4>Support</h4>
             <Link to="/contact">Contact Us</Link>
-            <a href="mailto:support@playbyplayanime.com">Email Support</a>
+            <a href="mailto:support@playbyplayai.org">Email Support</a>
           </div>
         </div>
 

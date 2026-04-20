@@ -27,7 +27,7 @@ export default function Contact() {
               <div>
                 <h3>Email</h3>
                 <p>For general inquiries and support</p>
-                <a href="mailto:support@playbyplayanime.com">support@playbyplayanime.com</a>
+                <a href="mailto:support@playbyplayai.org">support@playbyplayai.org</a>
               </div>
             </div>
 
