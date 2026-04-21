@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
   Zap, Trophy, BarChart3, MessageCircle, Mic, Globe,
   ChevronDown, ChevronUp, Smartphone, Star, TrendingUp
@@ -176,10 +176,10 @@ export default function Home() {
               matches. Across 13 major competitions. No ads. No betting.
             </p>
             <div className={styles.heroCtas}>
-              <a href="#download" className={styles.btnPrimary}>
+              <Link to="/join" className={styles.btnPrimary}>
                 <Smartphone size={18} />
-                Download the App
-              </a>
+                Start Free
+              </Link>
               <a href="#features" className={styles.btnSecondary}>
                 Learn More
               </a>
