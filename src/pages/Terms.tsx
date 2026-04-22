@@ -30,8 +30,8 @@ export default function Terms() {
             The app also offers AI-generated win probabilities and written
             match analysis for upcoming fixtures across 13 major competitions
             (including the Premier League, La Liga, Bundesliga, Serie A,
-            Ligue 1, UEFA Champions League, MLS, UEFA Euro 2024 and the FIFA
-            World Cup 2026). The Service is provided for entertainment and
+            Ligue 1, Champions League, MLS, Euro 2024 and the World Cup
+            2026). The Service is provided for entertainment and
             informational purposes only.
           </p>
         </section>

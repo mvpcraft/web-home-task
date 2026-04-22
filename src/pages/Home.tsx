@@ -29,7 +29,7 @@ const features = [
     icon: <Trophy size={28} />,
     title: '13 Major Competitions',
     description:
-      'Premier League, La Liga, Bundesliga, Serie A, Ligue 1, UEFA Champions League, Eredivisie, Primeira Liga, MLS, USL Championship, NWSL, UEFA Euro 2024, and the FIFA World Cup 2026 — all in one place.',
+      'Premier League, La Liga, Bundesliga, Serie A, Ligue 1, Champions League, Eredivisie, Primeira Liga, MLS, USL Championship, NWSL, Euro 2024, and the World Cup 2026 — all in one place.',
   },
   {
     icon: <Globe size={28} />,
@@ -87,7 +87,7 @@ const faqs = [
   },
   {
     q: 'Which leagues and competitions are covered?',
-    a: 'We cover 13 major competitions: the Premier League, La Liga, Bundesliga, Serie A, Ligue 1, UEFA Champions League, Eredivisie and Primeira Liga in Europe; MLS, USL Championship and NWSL in the US; plus UEFA Euro 2024 and the FIFA World Cup 2026. You can filter matches by region (Europe, USA, International).',
+    a: 'We cover 13 major competitions: the Premier League, La Liga, Bundesliga, Serie A, Ligue 1, Champions League, Eredivisie and Primeira Liga in Europe; MLS, USL Championship and NWSL in the US; plus Euro 2024 and the World Cup 2026. You can filter matches by region (Europe, USA, International).',
   },
   {
     q: 'Is the app free to use?',
