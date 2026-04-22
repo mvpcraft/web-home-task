@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Apple, Smartphone, ArrowLeft, Gift, Sparkles } from 'lucide-react'
+import { Apple, Smartphone, ArrowLeft, Sparkles } from 'lucide-react'
 import styles from './Join.module.css'
 
 type LocationState = { username?: string; email?: string } | null
@@ -24,17 +24,14 @@ export default function Welcome() {
 
         <div className={styles.badgeRow}>
           <span className={styles.badge}>
-            <Gift size={14} /> 10 welcome credits added
-          </span>
-          <span className={styles.badge}>
             <Sparkles size={14} /> Account ready
           </span>
         </div>
 
         <h1 className={styles.welcomeTitle}>Welcome aboard, {displayName}!</h1>
         <p className={styles.welcomeSub}>
-          Your PlayByPlay Anime account is ready and your 10 free credits are
-          waiting. Install the app on your phone and sign in{' '}
+          Your PlayByPlay Anime account is ready. Install the app on your
+          phone and sign in{' '}
           {email ? (
             <>
               with <strong style={{ color: 'var(--text)' }}>{email}</strong>
@@ -81,8 +78,7 @@ export default function Welcome() {
       <div className={styles.signinHint}>
         <strong>Tip.</strong> On your phone, open PlayByPlay Anime, tap{' '}
         <strong>Sign In</strong>, and enter the same email and password you
-        used to register. Your 10 welcome credits will be ready on the Credits
-        tab.
+        used to register.
       </div>
 
       <Link to="/" className={styles.backLink}>

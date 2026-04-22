@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, MessageCircle, BarChart3, Trophy, Gift, Sparkles } from 'lucide-react'
+import { ArrowRight, MessageCircle, BarChart3, Trophy, Sparkles } from 'lucide-react'
 import styles from './Join.module.css'
 
 export default function Join() {
@@ -54,18 +54,6 @@ export default function Join() {
             <span>
               Premier League, La Liga, Champions League, MLS, the World Cup
               2026 and more — all in one place.
-            </span>
-          </div>
-        </li>
-        <li className={styles.featureItem}>
-          <span className={styles.featureIcon}>
-            <Gift size={20} />
-          </span>
-          <div className={styles.featureBody}>
-            <strong>10 free welcome credits</strong>
-            <span>
-              No card required. Try AI predictions and live commentary the
-              moment you sign up.
             </span>
           </div>
         </li>

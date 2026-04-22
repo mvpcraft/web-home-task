@@ -101,7 +101,8 @@ export default function Signup() {
     <div className={styles.card}>
       <h1 className={styles.title}>Create your free account</h1>
       <p className={styles.lede}>
-        10 welcome credits will be waiting on your account. No card required.
+        No card required. Sign up once and sign into the mobile app with the
+        same email.
       </p>
 
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
