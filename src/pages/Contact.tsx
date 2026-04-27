@@ -70,8 +70,7 @@ export default function Contact() {
               <div>
                 <h3>General &amp; Account Support</h3>
                 <p>
-                  Account questions, bug reports, and account deletion
-                  requests.
+                  Billing questions, credit balance issues, bug reports, and account deletion requests.
                 </p>
                 <a href="mailto:support@playbyplayai.org">
                   support@playbyplayai.org
@@ -142,6 +141,7 @@ export default function Contact() {
                       Select a topic
                     </option>
                     <option value="account">Account &amp; Login</option>
+                    <option value="billing">Credits &amp; Purchases</option>
                     <option value="bug">Bug Report</option>
                     <option value="feature">Feature Request</option>
                     <option value="privacy">Privacy or Data Request</option>

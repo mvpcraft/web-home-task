@@ -929,3 +929,61 @@
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+/* ──────────────────────────────────────────
+   Referral invite banner
+   ────────────────────────────────────────── */
+.inviteBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  margin-bottom: 22px;
+  border-radius: 14px;
+  background: linear-gradient(
+    135deg,
+    rgba(30, 144, 255, 0.18),
+    rgba(255, 64, 129, 0.14)
+  );
+  border: 1px solid rgba(30, 144, 255, 0.35);
+}
+
+.inviteBannerIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(30, 144, 255, 0.22);
+  color: var(--primary, #1E90FF);
+  flex-shrink: 0;
+}
+
+.inviteBannerTitle {
+  color: var(--text, #fff);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+
+.inviteBannerBody {
+  color: var(--text-secondary, #A0A8C8);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.inviteRewardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(0, 230, 118, 0.12);
+  border: 1px solid rgba(0, 230, 118, 0.35);
+  color: var(--text, #fff);
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 14px;
+}

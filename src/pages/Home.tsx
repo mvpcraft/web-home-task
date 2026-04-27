@@ -39,18 +39,18 @@ const features = [
   },
   {
     icon: <Zap size={28} />,
-    title: 'No Ads, No Betting',
+    title: 'Credits, Not Subscriptions',
     description:
-      'PlayByPlay Anime is a pure entertainment companion — no gambling, no wagers, no ads between fixtures. Just AI predictions, live anime commentary, and the matches you care about.',
+      'Every new account gets 10 free welcome credits. Top up in packs of 10, 50, 150 or 500 — credits never expire, there are no monthly fees, no ads, and no betting. Predictions cost 1 credit; commentary costs 2 credits to join plus 2 every 5 minutes.',
   },
 ]
 
 const howItWorks = [
   {
     step: '01',
-    title: 'Sign Up in Seconds',
+    title: 'Sign Up, Get 10 Credits',
     description:
-      'Create your account with an email, a username, and an emoji avatar. Set your timezone so kick-off times land right. No card, no subscription — you are ready the moment you sign up.',
+      'Create your account with an email, a username, and an emoji avatar. Set your timezone so kick-off times land right. No card, no subscription — 10 welcome credits drop in the moment you sign up.',
   },
   {
     step: '02',
@@ -60,15 +60,15 @@ const howItWorks = [
   },
   {
     step: '03',
-    title: 'Get the AI Read',
+    title: 'Get the AI Read (1 Credit)',
     description:
-      'Tap any upcoming fixture and ask for an AI prediction. Our backend analyses recent form and head-to-head history and gives you home / draw / away probabilities plus a written breakdown. Predictions are cached, so re-opening the same prediction is free.',
+      'Tap any upcoming fixture and ask for an AI prediction. Our backend analyses recent form and head-to-head history and gives you home / draw / away probabilities plus a written breakdown. Once generated, re-opening the same prediction is free.',
   },
   {
     step: '04',
     title: 'Watch Live With Victoria',
     description:
-      'When a match kicks off, enter the commentary room. Victoria greets the match, reacts to goals, cards and big moments in real time — and when you speak into your mic, she listens, transcribes you, and replies out loud.',
+      'When a match kicks off, enter the commentary room (2 credits, then 2 every 5 min). Victoria greets the match, reacts to goals, cards and big moments in real time — and when you speak into your mic, she listens, transcribes you, and replies out loud.',
   },
 ]
 
@@ -83,7 +83,7 @@ const faqs = [
   },
   {
     q: 'How do AI match predictions work?',
-    a: 'When you open a fixture, you can request an AI prediction. Our backend analyses team form, head-to-head history, and live data from our football data provider, then generates win / draw / loss probabilities along with a written analysis explaining the reasoning. Predictions are cached per fixture, so re-opening the same prediction later is free.',
+    a: 'When you open a fixture, you can request an AI prediction. Our backend analyses team form, head-to-head history, and live data from our football data provider, then generates win / draw / loss probabilities along with a written analysis explaining the reasoning. Each prediction costs 1 credit and is cached, so re-opening the same prediction later is free.',
   },
   {
     q: 'Which leagues and competitions are covered?',
@@ -91,7 +91,7 @@ const faqs = [
   },
   {
     q: 'Is the app free to use?',
-    a: 'The app is free to download and new accounts can try the core features right away. There are no subscriptions, no ads, and no betting. Sign up with just an email and password to get started.',
+    a: 'The app is free to download and every new account starts with 10 free welcome credits. Core features use a credit-based system: AI predictions cost 1 credit per match, and live commentary with Victoria costs 2 credits to start a session plus 2 credits every 5 minutes you stay in it. Credits are purchased via in-app purchase in packs of 10, 50, 150 or 500, and they never expire.',
   },
   {
     q: 'When can I use Victoria\u2019s live commentary?',
@@ -115,7 +115,7 @@ const faqs = [
   },
   {
     q: 'Is my data safe?',
-    a: 'We only collect what we need to run your account and deliver commentary. We do not sell your personal information, and there are no ads. See our Privacy Policy for full details.',
+    a: 'We only collect what we need to run your account, deliver commentary, and validate credit purchases (handled via RevenueCat receipt validation). We do not sell your personal information, and there are no ads. See our Privacy Policy for full details.',
   },
 ]
 
@@ -191,8 +191,8 @@ export default function Home() {
               </div>
               <div className={styles.statDivider} />
               <div className={styles.stat}>
-                <strong>Free</strong>
-                <span>To Get Started</span>
+                <strong>10</strong>
+                <span>Welcome Credits</span>
               </div>
               <div className={styles.statDivider} />
               <div className={styles.stat}>
@@ -322,9 +322,9 @@ export default function Home() {
             <TrendingUp size={48} className={styles.ctaIcon} />
             <h2>Ready for the Next Kick-Off?</h2>
             <p>
-              Download PlayByPlay Anime and meet Victoria in the commentary
-              room when the next live match begins. Available on iOS and
-              Android.
+              Download PlayByPlay Anime, claim your 10 welcome credits, and
+              meet Victoria in the commentary room when the next live match
+              begins. Available on iOS and Android.
             </p>
             <div className={styles.ctaButtons}>
               <a href="#" className={styles.btnPrimary}>

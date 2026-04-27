@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState, type FormEvent } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Mail,
   Lock,
@@ -8,11 +8,18 @@ import {
   ArrowRight,
   AlertCircle,
   Loader2,
+  Gift,
 } from 'lucide-react'
 import styles from './Join.module.css'
 
 const API_BASE =
   (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') || ''
+
+type InviterInfo = {
+  username: string
+  avatar: string
+  bonusCredits: number
+}
 
 const deriveUsername = (email: string): string => {
   const prefix = email.split('@')[0] || 'user'
@@ -22,6 +29,8 @@ const deriveUsername = (email: string): string => {
 
 export default function Signup() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const referralCode = (searchParams.get('ref') || '').trim()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -32,6 +41,37 @@ export default function Signup() {
 
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Inviter lookup. We validate the ref code against the backend so we can
+  // show the inviter's username and reassure the new user the reward is real.
+  // A failed lookup is silent — we still submit the code at signup time in
+  // case it's valid and the pre-flight just failed.
+  const [inviter, setInviter] = useState<InviterInfo | null>(null)
+
+  useEffect(() => {
+    if (!referralCode) return
+    let cancelled = false
+    ;(async () => {
+      try {
+        const res = await fetch(
+          `${API_BASE}/api/referrals/validate?code=${encodeURIComponent(referralCode)}`,
+        )
+        const data = await res.json()
+        if (!cancelled && data?.valid && data.inviter) {
+          setInviter({
+            username: data.inviter.username,
+            avatar: data.inviter.avatar,
+            bonusCredits: data.bonusCredits ?? 10,
+          })
+        }
+      } catch {
+        // swallow — banner just won't render
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [referralCode])
 
   const validate = (): string | null => {
     if (!email.trim()) return 'Please enter your email address.'
@@ -65,6 +105,7 @@ export default function Signup() {
           email: cleanEmail,
           username,
           password,
+          ...(referralCode ? { referralCode } : {}),
         }),
       })
 
@@ -84,7 +125,11 @@ export default function Signup() {
 
       navigate('/join/welcome', {
         replace: true,
-        state: { username, email: cleanEmail },
+        state: {
+          username,
+          email: cleanEmail,
+          inviter: inviter ?? undefined,
+        },
       })
     } catch (err) {
       const msg =
@@ -101,9 +146,25 @@ export default function Signup() {
     <div className={styles.card}>
       <h1 className={styles.title}>Create your free account</h1>
       <p className={styles.lede}>
-        No card required. Sign up once and sign into the mobile app with the
-        same email.
+        10 welcome credits will be waiting on your account. No card required.
       </p>
+
+      {inviter && (
+        <div className={styles.inviteBanner} role="status">
+          <span className={styles.inviteBannerIcon} aria-hidden="true">
+            <Gift size={20} />
+          </span>
+          <div>
+            <div className={styles.inviteBannerTitle}>
+              {inviter.avatar} {inviter.username} invited you to Play by Play
+            </div>
+            <div className={styles.inviteBannerBody}>
+              Finish signup and buy any credits pack — you'll each earn{' '}
+              <strong>{inviter.bonusCredits} bonus credits</strong>.
+            </div>
+          </div>
+        </div>
+      )}
 
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         {error && (
