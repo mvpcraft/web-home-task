@@ -31,6 +31,10 @@ export default function Signup() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const referralCode = (searchParams.get('ref') || '').trim()
+  // Marketing attribution. Marketing links carry `?utm_source=slack|discord|…`;
+  // we forward whatever's there to the backend and let it normalise + persist.
+  // Blank/missing → backend stores null (organic signup).
+  const utmSource = (searchParams.get('utm_source') || '').trim()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -106,6 +110,7 @@ export default function Signup() {
           username,
           password,
           ...(referralCode ? { referralCode } : {}),
+          ...(utmSource ? { utmSource } : {}),
         }),
       })
 

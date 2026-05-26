@@ -1,0 +1,525 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   Admin login + dashboard. Self-contained styles — no shared dependency on
+   the public-site Layout. Dark navy palette consistent with the brand.
+   ─────────────────────────────────────────────────────────────────────── */
+
+.shell {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #131a3d 0%, #0a0e27 60%, #060920 100%);
+  color: #e8eaf6;
+  padding: 32px clamp(16px, 4vw, 48px);
+  box-sizing: border-box;
+}
+
+/* ─── Login ──────────────────────────────────────────────────────────── */
+
+.loginShell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #131a3d 0%, #0a0e27 60%, #060920 100%);
+  padding: 32px;
+  box-sizing: border-box;
+  color: #e8eaf6;
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 440px;
+  background: #151935;
+  border: 1px solid rgba(100, 120, 200, 0.15);
+  border-radius: 20px;
+  padding: 40px 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.loginBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(30, 144, 255, 0.12);
+  color: #5eb1ff;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.loginTitle {
+  margin: 0 0 8px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.loginLede {
+  margin: 0 0 28px;
+  color: #b0b7d6;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #b0b7d6;
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 14px;
+  color: #7a82a6;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #0a0e27;
+  border: 1px solid rgba(100, 120, 200, 0.2);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 15px;
+  padding: 12px 14px 12px 44px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input:focus {
+  border-color: #1e90ff;
+  box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.18);
+}
+
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: 0;
+  color: #7a82a6;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.eyeBtn:hover {
+  color: #b0b7d6;
+}
+
+.loginBtn {
+  margin-top: 8px;
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1e90ff 0%, #1a7fe6 100%);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.08s ease, box-shadow 0.15s ease;
+}
+
+.loginBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(30, 144, 255, 0.35);
+}
+
+.loginBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.errorBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255, 77, 94, 0.12);
+  border: 1px solid rgba(255, 77, 94, 0.3);
+  color: #ffb4bc;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Dashboard ──────────────────────────────────────────────────────── */
+
+.dashShell {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #131a3d 0%, #0a0e27 60%, #060920 100%);
+  color: #e8eaf6;
+  padding: 32px clamp(16px, 4vw, 48px) 64px;
+  box-sizing: border-box;
+}
+
+.loadingScreen {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  color: #b0b7d6;
+  font-size: 14px;
+}
+
+.dashHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.dashTitle {
+  margin: 0 0 4px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.dashSub {
+  margin: 0;
+  color: #7a82a6;
+  font-size: 14px;
+}
+
+.dashSub strong {
+  color: #b0b7d6;
+  font-weight: 600;
+}
+
+.dashActions {
+  display: flex;
+  gap: 10px;
+}
+
+.refreshBtn,
+.logoutBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(100, 120, 200, 0.2);
+  background: #151935;
+  color: #e8eaf6;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.refreshBtn:hover,
+.logoutBtn:hover {
+  border-color: rgba(30, 144, 255, 0.4);
+  background: #1a1f3d;
+}
+
+.refreshBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* KPI grid */
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.kpiCard {
+  display: flex;
+  gap: 14px;
+  padding: 18px 20px;
+  background: #151935;
+  border: 1px solid rgba(100, 120, 200, 0.15);
+  border-radius: 14px;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.kpiCard:hover {
+  border-color: rgba(30, 144, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.kpiIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(30, 144, 255, 0.15);
+  color: #5eb1ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpiBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kpiLabel {
+  font-size: 12px;
+  color: #7a82a6;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.kpiValue {
+  font-size: 26px;
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.kpiHint {
+  font-size: 12px;
+  color: #b0b7d6;
+}
+
+/* Section blocks */
+
+.section {
+  background: #151935;
+  border: 1px solid rgba(100, 120, 200, 0.15);
+  border-radius: 16px;
+  padding: 22px clamp(16px, 2vw, 24px);
+  margin-bottom: 24px;
+}
+
+.sectionHead {
+  margin-bottom: 18px;
+}
+
+.sectionTitle {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.sectionSub {
+  margin: 0;
+  color: #7a82a6;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.sectionSub code {
+  background: rgba(30, 144, 255, 0.1);
+  color: #5eb1ff;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: 'SFMono-Regular', Menlo, monospace;
+}
+
+.empty {
+  padding: 36px 12px;
+  text-align: center;
+  color: #7a82a6;
+  font-size: 14px;
+  border: 1px dashed rgba(100, 120, 200, 0.2);
+  border-radius: 12px;
+}
+
+/* Filter tabs */
+
+.filterRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.filterTab {
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid rgba(100, 120, 200, 0.2);
+  color: #b0b7d6;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filterTab:hover {
+  border-color: rgba(30, 144, 255, 0.4);
+  color: #e8eaf6;
+}
+
+.filterTabActive {
+  background: rgba(30, 144, 255, 0.15);
+  border-color: #1e90ff;
+  color: #5eb1ff;
+}
+
+/* Tables */
+
+.tableWrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(100, 120, 200, 0.12);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 600px;
+}
+
+.table thead th {
+  text-align: left;
+  padding: 12px 14px;
+  background: #0f1330;
+  color: #7a82a6;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid rgba(100, 120, 200, 0.15);
+}
+
+.table tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(100, 120, 200, 0.08);
+  color: #e8eaf6;
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.table tbody tr:hover {
+  background: rgba(30, 144, 255, 0.04);
+}
+
+.numCol {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.barCol {
+  width: 30%;
+  min-width: 120px;
+}
+
+.barTrack {
+  height: 6px;
+  background: rgba(100, 120, 200, 0.12);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background: linear-gradient(90deg, #1e90ff 0%, #5eb1ff 100%);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.sourcePill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(30, 144, 255, 0.1);
+  color: #5eb1ff;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'SFMono-Regular', Menlo, monospace;
+}
+
+.userCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #0a0e27;
+  border: 1px solid rgba(100, 120, 200, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.userName {
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.userEmail {
+  font-size: 12px;
+  color: #7a82a6;
+}
+
+.repeatBadge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(255, 215, 64, 0.15);
+  color: #ffd740;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

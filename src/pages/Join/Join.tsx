@@ -1,8 +1,20 @@
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { ArrowRight, MessageCircle, BarChart3, Trophy, Sparkles, Gift } from 'lucide-react'
 import styles from './Join.module.css'
 
 export default function Join() {
+  // Preserve marketing attribution across the Join → Signup hop. Marketing URLs
+  // land on /join with `?utm_source=slack|discord|gmail|linkedin|…`; if we drop
+  // the query string here, Signup never sees it and the user gets recorded as
+  // organic. We also forward `ref` so referral links work even if they hit /join.
+  const [params] = useSearchParams()
+  const forward = new URLSearchParams()
+  const utmSource = params.get('utm_source')
+  const ref = params.get('ref')
+  if (utmSource) forward.set('utm_source', utmSource)
+  if (ref) forward.set('ref', ref)
+  const signupHref = forward.toString() ? `/join/signup?${forward.toString()}` : '/join/signup'
+
   return (
     <div className={styles.card}>
       <span className={styles.eyebrow}>
@@ -72,7 +84,7 @@ export default function Join() {
       </ul>
 
       <div className={styles.ctaRow}>
-        <Link to="/join/signup" className={`${styles.btn} ${styles.btnPrimary} ${styles.btnLarge} ${styles.btnBlock}`}>
+        <Link to={signupHref} className={`${styles.btn} ${styles.btnPrimary} ${styles.btnLarge} ${styles.btnBlock}`}>
           Create your free account
           <ArrowRight size={18} />
         </Link>
