@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate, type ReactNode } from 'react-router-dom'
+import type { ReactNode } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Privacy from './pages/Privacy'
