@@ -5,6 +5,7 @@ import styles from './Join.module.css'
 const STEPS = [
   { path: '/join', label: 'Welcome' },
   { path: '/join/signup', label: 'Create Account' },
+  { path: '/join/live-match', label: 'Watch Live' },
   { path: '/join/welcome', label: 'Get the App' },
 ]
 

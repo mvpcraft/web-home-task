@@ -128,7 +128,7 @@ export default function Signup() {
         throw new Error(message)
       }
 
-      navigate('/join/welcome', {
+      navigate('/join/live-match', {
         replace: true,
         state: {
           username,

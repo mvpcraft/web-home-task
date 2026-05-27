@@ -8,6 +8,7 @@ import Contact from './pages/Contact'
 import JoinLayout from './pages/Join/JoinLayout'
 import Join from './pages/Join/Join'
 import Signup from './pages/Join/Signup'
+import LiveMatch from './pages/Join/LiveMatch'
 import Welcome from './pages/Join/Welcome'
 import AdminLogin from './pages/Admin/AdminLogin'
 import AdminDashboard from './pages/Admin/AdminDashboard'
@@ -34,6 +35,7 @@ function App() {
       <Route element={<JoinLayout />}>
         <Route path="/join" element={<Join />} />
         <Route path="/join/signup" element={<Signup />} />
+        <Route path="/join/live-match" element={<LiveMatch />} />
         <Route path="/join/welcome" element={<Welcome />} />
       </Route>
       <Route path="/admin/login" element={<AdminLogin />} />
