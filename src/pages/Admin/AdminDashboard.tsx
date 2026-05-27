@@ -59,7 +59,7 @@ function formatPercent(n: number): string {
 }
 
 function formatDate(s: string | null): string {
-  if (!s) return '—'
+  if (!s) return '-'
   try {
     return new Date(s).toLocaleDateString('en-US', {
       month: 'short',
@@ -67,7 +67,7 @@ function formatDate(s: string | null): string {
       year: 'numeric',
     })
   } catch {
-    return '—'
+    return '-'
   }
 }
 
@@ -100,7 +100,7 @@ export default function AdminDashboard() {
           headers: { Authorization: `Bearer ${session.token}` },
         })
         if (res.status === 401 || res.status === 403) {
-          // Token expired or admin access revoked — boot back to login.
+          // Token expired or admin access revoked - boot back to login.
           clearAdminSession()
           navigate('/admin/login', { replace: true })
           return
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
     return true
   })
 
-  // Max signups in UTM breakdown — used to scale the inline bars.
+  // Max signups in UTM breakdown - used to scale the inline bars.
   const maxUtmSignups = stats
     ? Math.max(1, ...stats.utmBreakdown.map(r => r.signups))
     : 1
@@ -206,7 +206,7 @@ export default function AdminDashboard() {
               hint={
                 stats.overview.totalUsers > 0
                   ? `${formatPercent(stats.overview.payingUsers / stats.overview.totalUsers)} conversion`
-                  : '—'
+                  : '-'
               }
             />
             <KpiCard
@@ -216,7 +216,7 @@ export default function AdminDashboard() {
               hint={
                 stats.overview.payingUsers > 0
                   ? `${formatPercent(stats.overview.repeatBuyers / stats.overview.payingUsers)} of payers`
-                  : '—'
+                  : '-'
               }
             />
             <KpiCard
@@ -335,7 +335,7 @@ export default function AdminDashboard() {
                                   <span className={styles.repeatBadge}>Repeat</span>
                                 )}
                               </div>
-                              <div className={styles.userEmail}>{u.email || '—'}</div>
+                              <div className={styles.userEmail}>{u.email || '-'}</div>
                             </div>
                           </div>
                         </td>

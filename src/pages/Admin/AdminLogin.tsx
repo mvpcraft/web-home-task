@@ -52,7 +52,7 @@ export default function AdminLogin() {
 
       const user = data.user as AdminUser & { role: string }
       if (user?.role !== 'admin') {
-        // Generic message — don't leak whether the email maps to a real user.
+        // Generic message - don't leak whether the email maps to a real user.
         setError('This account does not have admin access.')
         return
       }

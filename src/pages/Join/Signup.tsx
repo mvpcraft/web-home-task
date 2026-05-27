@@ -48,7 +48,7 @@ export default function Signup() {
 
   // Inviter lookup. We validate the ref code against the backend so we can
   // show the inviter's username and reassure the new user the reward is real.
-  // A failed lookup is silent — we still submit the code at signup time in
+  // A failed lookup is silent - we still submit the code at signup time in
   // case it's valid and the pre-flight just failed.
   const [inviter, setInviter] = useState<InviterInfo | null>(null)
 
@@ -69,7 +69,7 @@ export default function Signup() {
           })
         }
       } catch {
-        // swallow — banner just won't render
+        // swallow - banner just won't render
       }
     })()
     return () => {
@@ -164,7 +164,7 @@ export default function Signup() {
               {inviter.avatar} {inviter.username} invited you to Play by Play
             </div>
             <div className={styles.inviteBannerBody}>
-              Finish signup and buy any credits pack — you'll each earn{' '}
+              Finish signup and buy any credits pack - you'll each earn{' '}
               <strong>{inviter.bonusCredits} bonus credits</strong>.
             </div>
           </div>

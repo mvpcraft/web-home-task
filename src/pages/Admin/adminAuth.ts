@@ -1,6 +1,6 @@
 /**
  * Tiny admin-auth helper. The web app has no general user session, so we don't
- * need a full context — admin pages just read/write a JWT + identity from
+ * need a full context - admin pages just read/write a JWT + identity from
  * localStorage and the dashboard fetches with `Authorization: Bearer <token>`.
  *
  * Stored together so a partial state (token without user, etc.) can't happen.

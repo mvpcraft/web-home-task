@@ -26,7 +26,7 @@ export default function Privacy() {
               <strong>Account information:</strong> when you sign up we collect
               your email address, a username (up to 20 characters), and a
               password. You also choose an emoji avatar (for example
-              ⭐, 👑 or ⚽) — we do not collect or store profile photos.
+              ⭐, 👑 or ⚽) - we do not collect or store profile photos.
             </li>
             <li>
               <strong>Profile preferences:</strong> you select a timezone
@@ -107,7 +107,7 @@ export default function Privacy() {
               request.
             </li>
             <li>
-              Power live commentary with Victoria — including streaming audio,
+              Power live commentary with Victoria - including streaming audio,
               transcribing your voice, generating responses and synthesizing
               her replies back to you.
             </li>
@@ -157,29 +157,29 @@ export default function Privacy() {
           </p>
           <ul>
             <li>
-              <strong>Apple App Store and Google Play Store</strong> — process
+              <strong>Apple App Store and Google Play Store</strong> - process
               your in-app purchases. Their own privacy policies apply to the
               payment itself.
             </li>
             <li>
-              <strong>RevenueCat</strong> — validates purchase receipts from
+              <strong>RevenueCat</strong> - validates purchase receipts from
               Apple / Google and confirms which credit pack you bought. We
               send RevenueCat your account identifier so it can attach the
               purchase to the right account.
             </li>
             <li>
-              <strong>LiveKit</strong> — provides the real-time audio room for
+              <strong>LiveKit</strong> - provides the real-time audio room for
               live commentary. Your voice audio and text messages flow through
               LiveKit during an active session.
             </li>
             <li>
-              <strong>API-Football (api-sports.io)</strong> — provides live
+              <strong>API-Football (api-sports.io)</strong> - provides live
               match fixtures, scores, and statistics. We query public match
               data from this provider; we do <strong>not</strong> send them
               your account or personal information.
             </li>
             <li>
-              <strong>Cloud hosting</strong> — our backend API runs on
+              <strong>Cloud hosting</strong> - our backend API runs on
               Amazon Web Services (AWS) in the United States.
             </li>
           </ul>
@@ -233,7 +233,7 @@ export default function Privacy() {
           <p>
             All traffic between the app and our backend is encrypted in
             transit using HTTPS/TLS. Passwords are never stored in the app
-            itself — the app holds a session token issued by our backend.
+            itself - the app holds a session token issued by our backend.
             Purchase validation relies on signed receipts from Apple / Google
             and RevenueCat, so credit grants cannot be forged client-side.
             No system is perfectly secure, and we cannot guarantee absolute
@@ -256,7 +256,7 @@ export default function Privacy() {
             <li>Object to, or restrict, certain types of processing.</li>
           </ul>
           <p>
-            Account deletion is currently handled by our support team — email
+            Account deletion is currently handled by our support team - email
             us at{' '}
             <a href="mailto:support@playbyplayai.org">
               support@playbyplayai.org

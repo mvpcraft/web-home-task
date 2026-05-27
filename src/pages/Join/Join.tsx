@@ -27,7 +27,7 @@ export default function Join() {
       </h1>
 
       <p className={styles.lede}>
-        AI win probabilities for every fixture, plus Victoria — our 3D anime
+        AI win probabilities for every fixture, plus Victoria - our 3D anime
         commentator who watches live matches with you by voice. Set up your
         free account in under a minute.
       </p>
@@ -65,7 +65,7 @@ export default function Join() {
             <strong>13 major competitions</strong>
             <span>
               Premier League, La Liga, Champions League, MLS, the World Cup
-              2026 and more — all in one place.
+              2026 and more - all in one place.
             </span>
           </div>
         </li>

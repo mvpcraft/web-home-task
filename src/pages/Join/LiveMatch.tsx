@@ -41,7 +41,7 @@ export default function LiveMatch() {
       <p className={styles.lede}>
         When you open the app, the <strong>Matches</strong> tab lists every
         match that's currently in play. Any card with a red{' '}
-        <strong>LIVE NOW</strong> badge is ready for commentary — tap{' '}
+        <strong>LIVE NOW</strong> badge is ready for commentary - tap{' '}
         <strong>Watch Live</strong> and Victoria joins you in real time, reacting
         to goals, breaking down tactics, and answering anything you ask.
       </p>
@@ -79,7 +79,7 @@ export default function LiveMatch() {
             <CheckCircle2 size={16} />
           </span>
           <span>
-            <strong>Leave anytime</strong> — no extra charge until you come back
+            <strong>Leave anytime</strong> - no extra charge until you come back
             to a new session.
           </span>
         </li>
@@ -92,7 +92,7 @@ export default function LiveMatch() {
           onChange={(e: ChangeEvent<HTMLInputElement>) => setUnderstood(e.target.checked)}
         />
         <span>
-          I understand — in the app, I'll tap <strong>Watch Live</strong> on a
+          I understand - in the app, I'll tap <strong>Watch Live</strong> on a
           live match to start commentary with Victoria.
         </span>
       </label>

@@ -25,7 +25,7 @@ export default function Footer() {
             </div>
             <p className={styles.tagline}>
               AI-powered match predictions and a 3D anime commentator who watches
-              live football with you — in real time, by voice. Across 13 major
+              live football with you - in real time, by voice. Across 13 major
               competitions.
             </p>
           </div>

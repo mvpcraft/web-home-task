@@ -128,7 +128,7 @@ export default function Terms() {
             Google (Play Store) through our purchase provider, RevenueCat.
             We do not handle or store payment-card information. Refund
             requests for purchases must be submitted to Apple or Google in
-            accordance with their refund policies — we are not able to
+            accordance with their refund policies - we are not able to
             refund App Store or Play Store purchases directly.
           </p>
         </section>
@@ -223,10 +223,10 @@ export default function Terms() {
         <section>
           <h2>10. Intellectual Property</h2>
           <p>
-            The Service and all of its original content — including but not
+            The Service and all of its original content - including but not
             limited to the Victoria 3D character and her voice, text
             responses, animations, logos, UI designs, graphics, code, and
-            branding — are the property of PlayByPlay Anime or its
+            branding - are the property of PlayByPlay Anime or its
             licensors and are protected by copyright, trademark, and other
             intellectual-property laws. You are granted a personal,
             limited, non-exclusive, non-transferable, revocable licence to
@@ -235,8 +235,8 @@ export default function Terms() {
           <p>
             You may not copy, redistribute, modify, create derivative works
             from, publicly display, or commercially exploit any part of the
-            Service — including by extracting the 3D avatar, voice model,
-            AI prompts, or any other asset — without our prior written
+            Service - including by extracting the 3D avatar, voice model,
+            AI prompts, or any other asset - without our prior written
             consent.
           </p>
         </section>
@@ -283,7 +283,7 @@ export default function Terms() {
           <p>
             You can stop using the Service at any time by signing out and
             removing the app from your device. Account deletion is handled
-            by our support team — email us at{' '}
+            by our support team - email us at{' '}
             <a href="mailto:support@playbyplayai.org">
               support@playbyplayai.org
             </a>{' '}

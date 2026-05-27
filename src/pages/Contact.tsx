@@ -23,7 +23,7 @@ export default function Contact() {
       email: data.get('email'),
       subject: data.get('subject'),
       message: data.get('message'),
-      _subject: `PlayByPlay Anime contact — ${data.get('subject') || 'New enquiry'}`,
+      _subject: `PlayByPlay Anime contact - ${data.get('subject') || 'New enquiry'}`,
       _template: 'table',
       _captcha: 'false',
     }
@@ -86,7 +86,7 @@ export default function Contact() {
                 <h3>Response Times</h3>
                 <p>
                   Most enquiries receive a reply within 1–2 business days.
-                  Account and purchase issues are prioritised — please include
+                  Account and purchase issues are prioritised - please include
                   the email address on your account for faster resolution.
                 </p>
               </div>

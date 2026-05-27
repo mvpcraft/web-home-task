@@ -17,19 +17,19 @@ const features = [
     icon: <Mic size={28} />,
     title: 'Talk Back With Your Voice',
     description:
-      'Hold a two-way conversation while the match plays. Speak into your mic and Victoria listens, transcribes you in real time, and replies with her own voice — ask about a player, debate a decision, or just chat.',
+      'Hold a two-way conversation while the match plays. Speak into your mic and Victoria listens, transcribes you in real time, and replies with her own voice - ask about a player, debate a decision, or just chat.',
   },
   {
     icon: <BarChart3 size={28} />,
     title: 'AI Win Probability + Analysis',
     description:
-      'Tap any fixture for an AI-generated home / draw / away probability and a written breakdown of why — powered by our backend using live form and head-to-head data. Results are cached per match so re-opening is free.',
+      'Tap any fixture for an AI-generated home / draw / away probability and a written breakdown of why - powered by our backend using live form and head-to-head data. Results are cached per match so re-opening is free.',
   },
   {
     icon: <Trophy size={28} />,
     title: '13 Major Competitions',
     description:
-      'Premier League, La Liga, Bundesliga, Serie A, Ligue 1, Champions League, Eredivisie, Primeira Liga, MLS, USL Championship, NWSL, Euro 2024, and the World Cup 2026 — all in one place.',
+      'Premier League, La Liga, Bundesliga, Serie A, Ligue 1, Champions League, Eredivisie, Primeira Liga, MLS, USL Championship, NWSL, Euro 2024, and the World Cup 2026 - all in one place.',
   },
   {
     icon: <Globe size={28} />,
@@ -41,7 +41,7 @@ const features = [
     icon: <Zap size={28} />,
     title: 'Credits, Not Subscriptions',
     description:
-      'Every new account gets 10 free welcome credits. Top up in packs of 10, 50, 150 or 500 — credits never expire, there are no monthly fees, no ads, and no betting. Predictions cost 1 credit; commentary costs 2 credits to join plus 2 every 5 minutes.',
+      'Every new account gets 10 free welcome credits. Top up in packs of 10, 50, 150 or 500 - credits never expire, there are no monthly fees, no ads, and no betting. Predictions cost 1 credit; commentary costs 2 credits to join plus 2 every 5 minutes.',
   },
 ]
 
@@ -50,13 +50,13 @@ const howItWorks = [
     step: '01',
     title: 'Sign Up, Get 10 Credits',
     description:
-      'Create your account with an email, a username, and an emoji avatar. Set your timezone so kick-off times land right. No card, no subscription — 10 welcome credits drop in the moment you sign up.',
+      'Create your account with an email, a username, and an emoji avatar. Set your timezone so kick-off times land right. No card, no subscription - 10 welcome credits drop in the moment you sign up.',
   },
   {
     step: '02',
     title: 'Pick a Match',
     description:
-      'Open the Matches tab to see every live and upcoming fixture across 13 competitions — Premier League, La Liga, Champions League, MLS, the World Cup 2026, and more. Filter by Europe, USA or International, or search by team name.',
+      'Open the Matches tab to see every live and upcoming fixture across 13 competitions - Premier League, La Liga, Champions League, MLS, the World Cup 2026, and more. Filter by Europe, USA or International, or search by team name.',
   },
   {
     step: '03',
@@ -68,7 +68,7 @@ const howItWorks = [
     step: '04',
     title: 'Watch Live With Victoria',
     description:
-      'When a match kicks off, enter the commentary room (2 credits, then 2 every 5 min). Victoria greets the match, reacts to goals, cards and big moments in real time — and when you speak into your mic, she listens, transcribes you, and replies out loud.',
+      'When a match kicks off, enter the commentary room (2 credits, then 2 every 5 min). Victoria greets the match, reacts to goals, cards and big moments in real time - and when you speak into your mic, she listens, transcribes you, and replies out loud.',
   },
 ]
 
@@ -79,7 +79,7 @@ const faqs = [
   },
   {
     q: 'Who is Victoria?',
-    a: 'Victoria is the 3D anime avatar at the heart of the app. During live matches she speaks commentary out loud using natural voice, her mouth syncs to what she says, and her facial expressions shift between excited, shocked, happy, sad, and tense depending on the moment. You can also talk back to her — she listens, transcribes your voice, and responds in real time.',
+    a: 'Victoria is the 3D anime avatar at the heart of the app. During live matches she speaks commentary out loud using natural voice, her mouth syncs to what she says, and her facial expressions shift between excited, shocked, happy, sad, and tense depending on the moment. You can also talk back to her - she listens, transcribes your voice, and responds in real time.',
   },
   {
     q: 'How do AI match predictions work?',
@@ -95,11 +95,11 @@ const faqs = [
   },
   {
     q: 'When can I use Victoria\u2019s live commentary?',
-    a: 'Live commentary is only available while a match is actually in progress — first half, half-time, second half, or extra time. Once a match is finished, the commentary room for that match closes. Upcoming matches are browsable, but you\u2019ll need to wait for kick-off before Victoria can join you.',
+    a: 'Live commentary is only available while a match is actually in progress - first half, half-time, second half, or extra time. Once a match is finished, the commentary room for that match closes. Upcoming matches are browsable, but you\u2019ll need to wait for kick-off before Victoria can join you.',
   },
   {
     q: 'Can I make a prediction before kick-off?',
-    a: 'Yes. You can request an AI prediction for any upcoming fixture. There is no scoring game or leaderboard attached — predictions are a decision aid and entertainment feature, not a bet or a fantasy competition.',
+    a: 'Yes. You can request an AI prediction for any upcoming fixture. There is no scoring game or leaderboard attached - predictions are a decision aid and entertainment feature, not a bet or a fantasy competition.',
   },
   {
     q: 'Does the app involve betting or gambling?',
@@ -163,7 +163,7 @@ export default function Home() {
         <div className={styles.container}>
           <div className={styles.heroContent}>
             <div className={styles.badge}>
-              <Zap size={14} /> New — AI Commentary Now Live
+              <Zap size={14} /> New - AI Commentary Now Live
             </div>
             <h1 className={styles.heroTitle}>
               Football Predictions
@@ -216,7 +216,7 @@ export default function Home() {
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Everything You Need</h2>
           <p className={styles.sectionSubtitle}>
-            AI predictions, a 3D anime commentator who talks with you, and live fixtures from 13 competitions — all in your pocket.
+            AI predictions, a 3D anime commentator who talks with you, and live fixtures from 13 competitions - all in your pocket.
           </p>
           <div className={styles.featureGrid}>
             {features.map((f, i) => (
