@@ -171,6 +171,87 @@
   box-shadow: 0 6px 30px rgba(255, 64, 129, 0.5);
 }
 
+/* ─── "Coming soon" disabled button + tooltip ────────────────────────
+   Used for the Android download button until the Play Store URL exists.
+   The wrapper handles the tooltip (so it works on disabled <button>
+   children which don't fire hover events in some browsers); the inner
+   .btnDisabled class kills the lift-on-hover and dims the button. */
+
+.comingSoonWrap {
+  position: relative;
+  display: inline-block;
+}
+
+.comingSoonWrap::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  padding: 7px 12px;
+  background: #0A0E27;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 10;
+}
+
+.comingSoonWrap::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #0A0E27;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+  z-index: 10;
+}
+
+.comingSoonWrap:hover::after,
+.comingSoonWrap:focus-within::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.comingSoonWrap:hover::before,
+.comingSoonWrap:focus-within::before {
+  opacity: 1;
+}
+
+.btnDisabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  filter: grayscale(0.25);
+}
+
+.btnDisabled:hover {
+  transform: none !important;
+  box-shadow: 0 4px 20px rgba(255, 64, 129, 0.3) !important;
+}
+
+.soonBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-left: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .heroStats {
   display: flex;
   align-items: center;

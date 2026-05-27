@@ -336,16 +336,19 @@ export default function Home() {
                 <Smartphone size={18} />
                 Download on iOS
               </a>
-              {/* TODO: replace href with the Play Store URL once the Android build ships. */}
-              <a
-                href="#"
-                className={styles.btnAccent}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Smartphone size={18} />
-                Download on Android
-              </a>
+              {/* Android is not yet shipped - disabled with a hover tooltip. */}
+              <span className={styles.comingSoonWrap} data-tooltip="Coming soon">
+                <button
+                  type="button"
+                  disabled
+                  aria-disabled="true"
+                  className={`${styles.btnAccent} ${styles.btnDisabled}`}
+                >
+                  <Smartphone size={18} />
+                  Download on Android
+                  <span className={styles.soonBadge}>Soon</span>
+                </button>
+              </span>
             </div>
           </div>
         </div>

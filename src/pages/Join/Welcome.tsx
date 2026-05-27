@@ -15,7 +15,8 @@ type LocationState = {
 } | null
 
 const IOS_STORE_URL = 'https://apps.apple.com/us/app/playbyplay-anime/id6760711721'
-const ANDROID_STORE_URL = '#'
+// Android isn't shipped yet - the Play Store button below is rendered as a
+// disabled button with a "Coming soon" tooltip until we have a store URL.
 
 export default function Welcome() {
   const location = useLocation()
@@ -83,20 +84,26 @@ export default function Welcome() {
           </span>
         </a>
 
-        <a
-          href={ANDROID_STORE_URL}
-          className={styles.storeBtn}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span className={styles.storeIcon}>
-            <Smartphone size={20} />
-          </span>
-          <span className={styles.storeText}>
-            <span>Get it on</span>
-            <strong>Google Play</strong>
-          </span>
-        </a>
+        {/* Android is not yet shipped - disabled with a Coming Soon tooltip. */}
+        <span className={styles.comingSoonWrap} data-tooltip="Coming soon">
+          <button
+            type="button"
+            disabled
+            aria-disabled="true"
+            className={`${styles.storeBtn} ${styles.storeBtnDisabled}`}
+          >
+            <span className={styles.storeIcon}>
+              <Smartphone size={20} />
+            </span>
+            <span className={styles.storeText}>
+              <span>Get it on</span>
+              <strong>
+                Google Play
+                <span className={styles.soonBadge}>Soon</span>
+              </strong>
+            </span>
+          </button>
+        </span>
       </div>
 
       <div className={styles.signinHint}>

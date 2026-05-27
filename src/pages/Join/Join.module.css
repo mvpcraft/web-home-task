@@ -1064,3 +1064,91 @@
   color: var(--primary-light);
   border: 1px solid rgba(30, 144, 255, 0.3);
 }
+
+/* ──────────────────────────────────────────
+   "Coming soon" tooltip for the Android store button on /join/welcome.
+   The wrapper carries the hover-revealed tooltip so it still works
+   when the inner <button> is `disabled`.
+   ────────────────────────────────────────── */
+.comingSoonWrap {
+  position: relative;
+  display: block;
+}
+
+.comingSoonWrap::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  padding: 7px 12px;
+  background: #0A0E27;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 5;
+}
+
+.comingSoonWrap::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #0A0E27;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+  z-index: 5;
+}
+
+.comingSoonWrap:hover::after,
+.comingSoonWrap:focus-within::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.comingSoonWrap:hover::before,
+.comingSoonWrap:focus-within::before {
+  opacity: 1;
+}
+
+/* Disabled variant of .storeBtn used for the Android button. Resets the
+   hover lift + border-color change so the button reads as inert. */
+.storeBtnDisabled {
+  width: 100%;
+  font-family: inherit;
+  text-align: left;
+  opacity: 0.55;
+  cursor: not-allowed;
+  filter: grayscale(0.25);
+}
+
+.storeBtnDisabled:hover {
+  transform: none;
+  border-color: var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: none;
+}
+
+.soonBadge {
+  display: inline-block;
+  padding: 1px 8px;
+  margin-left: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--text);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  vertical-align: 1px;
+}
