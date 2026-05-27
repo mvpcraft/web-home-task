@@ -523,3 +523,149 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
+/* ─── Shared admin top nav ───────────────────────────────────────────── */
+
+.adminNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px;
+  background: #151935;
+  border: 1px solid rgba(100, 120, 200, 0.15);
+  border-radius: 14px;
+  flex-wrap: wrap;
+}
+
+.adminNavBrand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adminNavLogo {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.adminNavLogoTag {
+  font-size: 11px;
+  color: #5eb1ff;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(30, 144, 255, 0.12);
+}
+
+.adminNavTabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: #0a0e27;
+  border: 1px solid rgba(100, 120, 200, 0.15);
+  border-radius: 10px;
+}
+
+.adminNavTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  color: #b0b7d6;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.adminNavTab:hover {
+  color: #e8eaf6;
+  background: rgba(30, 144, 255, 0.08);
+}
+
+.adminNavTabActive {
+  background: rgba(30, 144, 255, 0.18);
+  color: #fff;
+}
+
+.adminNavMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adminNavEmail {
+  font-size: 12px;
+  color: #7a82a6;
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Marketing page extras ──────────────────────────────────────────── */
+
+.textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: #0a0e27;
+  border: 1px solid rgba(100, 120, 200, 0.2);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 14px;
+  padding: 14px;
+  outline: none;
+  resize: vertical;
+  font-family: 'SFMono-Regular', Menlo, monospace;
+  line-height: 1.5;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.textarea:focus {
+  border-color: #1e90ff;
+  box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.18);
+}
+
+.textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.recipientMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.recipientChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(30, 144, 255, 0.12);
+  border: 1px solid rgba(30, 144, 255, 0.3);
+  color: #5eb1ff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.recipientChipBad {
+  background: rgba(255, 77, 94, 0.12);
+  border-color: rgba(255, 77, 94, 0.3);
+  color: #ffb4bc;
+}
+
+.recipientHint {
+  font-size: 12px;
+  color: #7a82a6;
+  font-family: 'SFMono-Regular', Menlo, monospace;
+}

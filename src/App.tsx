@@ -12,6 +12,7 @@ import LiveMatch from './pages/Join/LiveMatch'
 import Welcome from './pages/Join/Welcome'
 import AdminLogin from './pages/Admin/AdminLogin'
 import AdminDashboard from './pages/Admin/AdminDashboard'
+import AdminMarketing from './pages/Admin/AdminMarketing'
 import { getAdminSession } from './pages/Admin/adminAuth'
 
 // Route guard for /admin/*. No session → bounce to /admin/login. The dashboard
@@ -44,6 +45,14 @@ function App() {
         element={
           <RequireAdmin>
             <AdminDashboard />
+          </RequireAdmin>
+        }
+      />
+      <Route
+        path="/admin/marketing"
+        element={
+          <RequireAdmin>
+            <AdminMarketing />
           </RequireAdmin>
         }
       />

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  LogOut, RefreshCw, Users, UserPlus, CreditCard, Repeat,
+  RefreshCw, Users, UserPlus, CreditCard, Repeat,
   Coins, ShoppingBag, AlertCircle, Loader2,
 } from 'lucide-react'
+import AdminNav from './AdminNav'
 import {
   ADMIN_API_BASE,
   clearAdminSession,
@@ -81,11 +82,6 @@ export default function AdminDashboard() {
   const [error, setError] = useState<string | null>(null)
   const [filter, setFilter] = useState<'all' | 'repeat' | 'first'>('all')
 
-  const handleLogout = useCallback(() => {
-    clearAdminSession()
-    navigate('/admin/login', { replace: true })
-  }, [navigate])
-
   const fetchStats = useCallback(
     async (showSpinner = true) => {
       if (!session) {
@@ -151,11 +147,13 @@ export default function AdminDashboard() {
 
   return (
     <div className={styles.dashShell}>
-      <header className={styles.dashHeader}>
+      <AdminNav />
+
+      <header className={styles.dashHeader} style={{ marginTop: 28 }}>
         <div>
-          <h1 className={styles.dashTitle}>PlayByPlay Admin</h1>
+          <h1 className={styles.dashTitle}>Dashboard</h1>
           <p className={styles.dashSub}>
-            Signed in as <strong>{session?.user.email}</strong>
+            Signups, conversion, and paying users. Admin accounts are excluded.
           </p>
         </div>
         <div className={styles.dashActions}>
@@ -168,10 +166,6 @@ export default function AdminDashboard() {
           >
             <RefreshCw size={16} className={refreshing ? styles.spin : undefined} />
             Refresh
-          </button>
-          <button type="button" className={styles.logoutBtn} onClick={handleLogout}>
-            <LogOut size={16} />
-            Sign out
           </button>
         </div>
       </header>
