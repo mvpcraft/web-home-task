@@ -327,11 +327,22 @@ export default function Home() {
               begins. Available on iOS and Android.
             </p>
             <div className={styles.ctaButtons}>
-              <a href="#" className={styles.btnPrimary}>
+              <a
+                href="https://apps.apple.com/us/app/playbyplay-anime/id6760711721"
+                className={styles.btnPrimary}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Smartphone size={18} />
                 Download on iOS
               </a>
-              <a href="#" className={styles.btnAccent}>
+              {/* TODO: replace href with the Play Store URL once the Android build ships. */}
+              <a
+                href="#"
+                className={styles.btnAccent}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Smartphone size={18} />
                 Download on Android
               </a>

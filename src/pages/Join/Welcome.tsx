@@ -14,7 +14,7 @@ type LocationState = {
   inviter?: InviterInfo
 } | null
 
-const IOS_STORE_URL = '#'
+const IOS_STORE_URL = 'https://apps.apple.com/us/app/playbyplay-anime/id6760711721'
 const ANDROID_STORE_URL = '#'
 
 export default function Welcome() {
