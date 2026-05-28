@@ -101,9 +101,19 @@ export function clearAnalyticsUserId(): void {
 }
 
 /**
- * Send an event. Returns immediately - the network call is fire-and-forget.
- * If sendBeacon is available we use it so events survive even on tab close
- * or navigation; otherwise we fall back to `fetch({ keepalive: true })`.
+ * Send an event. Fire-and-forget - the network call never blocks the UI.
+ *
+ * We use `fetch({ keepalive: true })` rather than `navigator.sendBeacon`
+ * because:
+ *  - sendBeacon with `application/json` triggers a CORS preflight; if the
+ *    preflight fails the beacon is dropped SILENTLY (no network entry in
+ *    DevTools, no console error). That's the worst possible failure mode
+ *    for debugging analytics.
+ *  - `fetch keepalive` survives page navigation/unload the same way and
+ *    shows up cleanly in the Network panel so we can see 4xx/5xx.
+ *
+ * Errors are logged to console (not thrown) so you can spot misconfigured
+ * env vars or missing routes without breaking the onboarding flow.
  */
 export function track(event: AnalyticsEvent, properties?: Record<string, unknown>): void {
   if (typeof window === 'undefined') return
@@ -121,24 +131,36 @@ export function track(event: AnalyticsEvent, properties?: Record<string, unknown
 
   const endpoint = `${API_BASE}/api/analytics/track`
 
-  try {
-    if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
-      const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' })
-      const ok = navigator.sendBeacon(endpoint, blob)
-      if (ok) return
-      // Fall through to fetch if the beacon was refused (size limit etc.)
-    }
-    void fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      keepalive: true,
-    }).catch(() => {
-      /* swallow - analytics must never break the user flow */
+  fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+    keepalive: true,
+    // Explicit so misconfigured CORS surfaces as a clear browser error
+    // instead of an opaque no-cors response with status 0.
+    mode: 'cors',
+    credentials: 'omit',
+  })
+    .then(res => {
+      if (!res.ok) {
+        // 404 here almost always means the backend hasn't been redeployed
+        // with the new /api/analytics/track route. 401/403 means an auth
+        // middleware was accidentally placed in front of the public route.
+        console.warn(
+          `[analytics] track(${event}) failed: ${res.status} ${res.statusText} - ` +
+            `endpoint=${endpoint}. ` +
+            'If this is 404, the backend likely needs a redeploy.',
+        )
+      }
     })
-  } catch {
-    /* swallow */
-  }
+    .catch(err => {
+      // Network-level failure: bad VITE_API_URL, CORS, DNS, offline. The
+      // console message tells you which knob to check.
+      console.warn(
+        `[analytics] track(${event}) network error against ${endpoint}:`,
+        err instanceof Error ? err.message : err,
+      )
+    })
 }
 
 /**
