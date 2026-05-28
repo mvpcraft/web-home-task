@@ -1,5 +1,5 @@
 import { Link, useSearchParams } from 'react-router-dom'
-import { ArrowRight, MessageCircle, BarChart3, Trophy, Sparkles, Gift } from 'lucide-react'
+import { ArrowRight, MessageCircle, BarChart3, Trophy, Sparkles, Gift, Zap } from 'lucide-react'
 import { track } from '../../lib/analytics'
 import styles from './Join.module.css'
 
@@ -32,6 +32,26 @@ export default function Join() {
         commentator who watches live matches with you by voice. Set up your
         free account in under a minute.
       </p>
+
+      {/* Above-the-fold CTA. Most visitors decide before they scroll past
+          the feature list, so the primary action lives here AND at the
+          bottom; analytics tag the click location so we can see which one
+          actually converts. */}
+      <div className={styles.topCtaRow}>
+        <Link
+          to={signupHref}
+          className={`${styles.btn} ${styles.btnPrimary} ${styles.btnLarge} ${styles.btnBlock}`}
+          onClick={() =>
+            track('marketing_cta_clicked', { location: 'join_landing_top', target: 'signup' })
+          }
+        >
+          Get started, free
+          <ArrowRight size={18} />
+        </Link>
+        <p className={styles.ctaHint}>
+          <Zap size={14} /> 10 free credits on signup. No card required.
+        </p>
+      </div>
 
       <ul className={styles.featureList}>
         <li className={styles.featureItem}>
@@ -89,7 +109,7 @@ export default function Join() {
           to={signupHref}
           className={`${styles.btn} ${styles.btnPrimary} ${styles.btnLarge} ${styles.btnBlock}`}
           onClick={() =>
-            track('marketing_cta_clicked', { location: 'join_landing', target: 'signup' })
+            track('marketing_cta_clicked', { location: 'join_landing_bottom', target: 'signup' })
           }
         >
           Create your free account

@@ -315,15 +315,24 @@
    ────────────────────────────────────────── */
 .featureList {
   display: grid;
-  gap: 14px;
-  margin-bottom: 32px;
+  /* Tightened gap + grid to 2 columns so the feature block reads as a
+     supporting evidence panel under the top CTA rather than a long scroll. */
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 560px) {
+  .featureList {
+    grid-template-columns: 1fr;
+  }
 }
 
 .featureItem {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   align-items: flex-start;
-  padding: 14px 16px;
+  padding: 12px 14px;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border);
@@ -442,6 +451,33 @@
   flex-wrap: wrap;
   gap: 12px;
   animation: fadeUp 0.6s ease-out 0.75s both;
+}
+
+/* Above-the-fold CTA cluster that sits between the lede and the feature
+   list. The hint underneath uses smaller copy so it reads as a benefit
+   tag rather than a duplicate sub-headline. */
+.topCtaRow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+  animation: fadeUp 0.6s ease-out 0.32s both;
+}
+
+.ctaHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0 4px;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.ctaHint svg {
+  color: var(--warning, #FFD740);
+  flex-shrink: 0;
 }
 
 .secondaryNote {

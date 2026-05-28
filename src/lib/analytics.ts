@@ -129,7 +129,11 @@ export function track(event: AnalyticsEvent, properties?: Record<string, unknown
     referrer: document.referrer || null,
   }
 
-  const endpoint = `${API_BASE}/api/analytics/track`
+  // Path is `/collect` (not `/track`) because most default ad-blocker
+  // filter lists (uBlock, AdGuard, Brave shields, PiHole) match `*track*`
+  // and silently drop the request. The backend still accepts `/track` as
+  // a backwards-compat alias for now.
+  const endpoint = `${API_BASE}/api/analytics/collect`
 
   fetch(endpoint, {
     method: 'POST',
