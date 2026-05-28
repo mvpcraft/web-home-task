@@ -4,6 +4,7 @@ import {
   Zap, Trophy, BarChart3, MessageCircle, Mic, Globe,
   ChevronDown, ChevronUp, Smartphone, Star, TrendingUp
 } from 'lucide-react'
+import { track } from '../lib/analytics'
 import styles from './Home.module.css'
 
 const features = [
@@ -332,17 +333,22 @@ export default function Home() {
                 className={styles.btnPrimary}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => track('ios_download_clicked', { location: 'home_cta' })}
               >
                 <Smartphone size={18} />
                 Download on iOS
               </a>
-              {/* Android is not yet shipped - disabled with a hover tooltip. */}
+              {/* Android is not yet shipped - disabled with a hover tooltip.
+                  Still tracked so we can size Android demand before we ship. */}
               <span className={styles.comingSoonWrap} data-tooltip="Coming soon">
                 <button
                   type="button"
                   disabled
                   aria-disabled="true"
                   className={`${styles.btnAccent} ${styles.btnDisabled}`}
+                  onClick={() =>
+                    track('android_clicked_coming_soon', { location: 'home_cta' })
+                  }
                 >
                   <Smartphone size={18} />
                   Download on Android

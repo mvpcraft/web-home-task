@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Mail, LogOut } from 'lucide-react'
+import { LayoutDashboard, Mail, Activity, LogOut } from 'lucide-react'
 import { clearAdminSession, getAdminSession } from './adminAuth'
 import styles from './Admin.module.css'
 
@@ -35,6 +35,15 @@ export default function AdminNav() {
         >
           <LayoutDashboard size={16} />
           Dashboard
+        </NavLink>
+        <NavLink
+          to="/admin/analytics"
+          className={({ isActive }) =>
+            `${styles.adminNavTab} ${isActive ? styles.adminNavTabActive : ''}`
+          }
+        >
+          <Activity size={16} />
+          Analytics
         </NavLink>
         <NavLink
           to="/admin/marketing"

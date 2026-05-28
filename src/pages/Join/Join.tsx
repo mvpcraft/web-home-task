@@ -1,5 +1,6 @@
 import { Link, useSearchParams } from 'react-router-dom'
 import { ArrowRight, MessageCircle, BarChart3, Trophy, Sparkles, Gift } from 'lucide-react'
+import { track } from '../../lib/analytics'
 import styles from './Join.module.css'
 
 export default function Join() {
@@ -84,7 +85,13 @@ export default function Join() {
       </ul>
 
       <div className={styles.ctaRow}>
-        <Link to={signupHref} className={`${styles.btn} ${styles.btnPrimary} ${styles.btnLarge} ${styles.btnBlock}`}>
+        <Link
+          to={signupHref}
+          className={`${styles.btn} ${styles.btnPrimary} ${styles.btnLarge} ${styles.btnBlock}`}
+          onClick={() =>
+            track('marketing_cta_clicked', { location: 'join_landing', target: 'signup' })
+          }
+        >
           Create your free account
           <ArrowRight size={18} />
         </Link>

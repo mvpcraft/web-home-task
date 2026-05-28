@@ -1,6 +1,7 @@
 import { useState, type ChangeEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ArrowRight, CheckCircle2, Play, Sparkles } from 'lucide-react'
+import { track } from '../../lib/analytics'
 import styles from './Join.module.css'
 
 type InviterInfo = {
@@ -23,7 +24,17 @@ export default function LiveMatch() {
 
   const handleContinue = () => {
     if (!understood) return
+    track('live_match_continued')
     navigate('/join/welcome', { replace: true, state })
+  }
+
+  // Only emit an event when the box gets CHECKED, not on every toggle. A
+  // user un-checking by accident shouldn't generate noise; the funnel only
+  // cares whether they ever acknowledged the screen.
+  const handleUnderstoodChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const next = e.target.checked
+    setUnderstood(next)
+    if (next) track('live_match_understood')
   }
 
   return (
@@ -89,7 +100,7 @@ export default function LiveMatch() {
         <input
           type="checkbox"
           checked={understood}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setUnderstood(e.target.checked)}
+          onChange={handleUnderstoodChange}
         />
         <span>
           I understand - in the app, I'll tap <strong>Watch Live</strong> on a

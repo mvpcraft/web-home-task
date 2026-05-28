@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { Check } from 'lucide-react'
+import { trackPageView } from '../../lib/analytics'
 import styles from './Join.module.css'
 
 const STEPS = [
@@ -17,6 +19,13 @@ function getStepIndex(pathname: string) {
 export default function JoinLayout() {
   const { pathname } = useLocation()
   const current = getStepIndex(pathname)
+
+  // Fire a page_view event whenever the user lands on a new onboarding
+  // route. Putting this in the layout means each Join page doesn't need to
+  // remember to track itself - they only declare event-specific calls.
+  useEffect(() => {
+    trackPageView()
+  }, [pathname])
 
   return (
     <div className={styles.shell}>

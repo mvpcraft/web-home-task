@@ -10,6 +10,7 @@ import {
   Loader2,
   Gift,
 } from 'lucide-react'
+import { setAnalyticsUserId, track } from '../../lib/analytics'
 import styles from './Join.module.css'
 
 const API_BASE =
@@ -127,6 +128,20 @@ export default function Signup() {
         }
         throw new Error(message)
       }
+
+      // Parse the response so we can capture the new user's id and attach it
+      // to subsequent analytics events. Falls back gracefully if the server
+      // shape ever changes - we still navigate to the next step.
+      const data = (await res.json().catch(() => null)) as
+        | { user?: { id?: string } }
+        | null
+      if (data?.user?.id) {
+        setAnalyticsUserId(data.user.id)
+      }
+      track('signup_completed', {
+        hasReferral: Boolean(referralCode),
+        utmSource: utmSource || null,
+      })
 
       navigate('/join/live-match', {
         replace: true,

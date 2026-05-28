@@ -13,6 +13,7 @@ import Welcome from './pages/Join/Welcome'
 import AdminLogin from './pages/Admin/AdminLogin'
 import AdminDashboard from './pages/Admin/AdminDashboard'
 import AdminMarketing from './pages/Admin/AdminMarketing'
+import AdminAnalytics from './pages/Admin/AdminAnalytics'
 import { getAdminSession } from './pages/Admin/adminAuth'
 
 // Route guard for /admin/*. No session → bounce to /admin/login. The dashboard
@@ -53,6 +54,14 @@ function App() {
         element={
           <RequireAdmin>
             <AdminMarketing />
+          </RequireAdmin>
+        }
+      />
+      <Route
+        path="/admin/analytics"
+        element={
+          <RequireAdmin>
+            <AdminAnalytics />
           </RequireAdmin>
         }
       />

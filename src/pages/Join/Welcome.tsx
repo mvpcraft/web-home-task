@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { Apple, Smartphone, ArrowLeft, Sparkles, Gift } from 'lucide-react'
+import { track } from '../../lib/analytics'
 import styles from './Join.module.css'
 
 type InviterInfo = {
@@ -74,6 +75,7 @@ export default function Welcome() {
           className={styles.storeBtn}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => track('ios_download_clicked', { location: 'join_welcome' })}
         >
           <span className={styles.storeIcon}>
             <Apple size={20} />
@@ -84,13 +86,18 @@ export default function Welcome() {
           </span>
         </a>
 
-        {/* Android is not yet shipped - disabled with a Coming Soon tooltip. */}
+        {/* Android is not yet shipped - disabled with a Coming Soon tooltip.
+            We still track the click so we can quantify Android demand and
+            decide when shipping the Play Store build is worth prioritising. */}
         <span className={styles.comingSoonWrap} data-tooltip="Coming soon">
           <button
             type="button"
             disabled
             aria-disabled="true"
             className={`${styles.storeBtn} ${styles.storeBtnDisabled}`}
+            onClick={() =>
+              track('android_clicked_coming_soon', { location: 'join_welcome' })
+            }
           >
             <span className={styles.storeIcon}>
               <Smartphone size={20} />
