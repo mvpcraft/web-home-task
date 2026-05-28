@@ -27,6 +27,8 @@ export default function JoinLayout() {
     trackPageView()
   }, [pathname])
 
+  const showStepper = pathname !== '/join'
+
   return (
     <div className={styles.shell}>
       <div className={styles.orbs} aria-hidden="true">
@@ -41,25 +43,27 @@ export default function JoinLayout() {
           <span className={styles.brandName}>PlayByPlay Anime</span>
         </Link>
 
-        <ol className={styles.stepper} aria-label="Onboarding progress">
-          {STEPS.map((step, i) => {
-            const isDone = i < current
-            const isActive = i === current
-            return (
-              <li
-                key={step.path}
-                className={`${styles.step} ${isActive ? styles.stepActive : ''} ${
-                  isDone ? styles.stepDone : ''
-                }`}
-              >
-                <span className={styles.stepDot}>
-                  {isDone ? <Check size={14} strokeWidth={3} /> : i + 1}
-                </span>
-                <span className={styles.stepLabel}>{step.label}</span>
-              </li>
-            )
-          })}
-        </ol>
+        {showStepper && (
+          <ol className={styles.stepper} aria-label="Onboarding progress">
+            {STEPS.map((step, i) => {
+              const isDone = i < current
+              const isActive = i === current
+              return (
+                <li
+                  key={step.path}
+                  className={`${styles.step} ${isActive ? styles.stepActive : ''} ${
+                    isDone ? styles.stepDone : ''
+                  }`}
+                >
+                  <span className={styles.stepDot}>
+                    {isDone ? <Check size={14} strokeWidth={3} /> : i + 1}
+                  </span>
+                  <span className={styles.stepLabel}>{step.label}</span>
+                </li>
+              )
+            })}
+          </ol>
+        )}
       </header>
 
       <main className={styles.main}>
