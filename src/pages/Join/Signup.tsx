@@ -66,7 +66,7 @@ export default function Signup() {
           setInviter({
             username: data.inviter.username,
             avatar: data.inviter.avatar,
-            bonusCredits: data.bonusCredits ?? 10,
+            bonusCredits: data.bonusCredits ?? 100,
           })
         }
       } catch {
@@ -166,7 +166,7 @@ export default function Signup() {
     <div className={styles.card}>
       <h1 className={styles.title}>Create your free account</h1>
       <p className={styles.lede}>
-        10 welcome credits will be waiting on your account. No card required.
+        100 welcome credits will be waiting on your account. No card required.
       </p>
 
       {inviter && (

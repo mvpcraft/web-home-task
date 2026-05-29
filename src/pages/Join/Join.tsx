@@ -84,7 +84,7 @@ export default function Join() {
         the World Cup 2026.
       </p>
 
-      {/* Above-the-fold CTA. The label names the concrete reward (10 credits)
+      {/* Above-the-fold CTA. The label names the concrete reward (100 credits)
           instead of the vague "Get started" because audits keep flagging
           benefit-led copy as the single biggest CTA conversion lever. */}
       <div className={styles.topCtaRow}>
@@ -99,7 +99,7 @@ export default function Join() {
             })
           }
         >
-          Get 10 free credits
+          Get 100 free credits
           <ArrowRight size={18} />
         </Link>
         <p className={styles.ctaHint}>
@@ -232,7 +232,7 @@ export default function Join() {
             })
           }
         >
-          Get 10 free credits
+          Get 100 free credits
           <ArrowRight size={18} />
         </Link>
       </div>

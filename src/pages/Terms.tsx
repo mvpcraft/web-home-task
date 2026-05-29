@@ -89,13 +89,13 @@ export default function Terms() {
           <h3>5.2 What credits are used for</h3>
           <ul>
             <li>
-              <strong>AI match prediction:</strong> 1 credit per fixture.
+              <strong>AI match prediction:</strong> 10 credits per fixture.
               Once generated, re-opening the same prediction for the same
               match is free for you.
             </li>
             <li>
-              <strong>Live commentary with Victoria:</strong> 2 credits to
-              enter a live-match commentary room, plus 2 additional credits
+              <strong>Live commentary with Victoria:</strong> 20 credits to
+              enter a live-match commentary room, plus 20 additional credits
               for every 5 minutes you remain in the session.
             </li>
           </ul>

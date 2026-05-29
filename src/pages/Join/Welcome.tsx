@@ -37,7 +37,7 @@ export default function Welcome() {
 
         <div className={styles.badgeRow}>
           <span className={styles.badge}>
-            <Gift size={14} /> 10 welcome credits added
+            <Gift size={14} /> 100 welcome credits added
           </span>
           <span className={styles.badge}>
             <Sparkles size={14} /> Account ready
@@ -46,7 +46,7 @@ export default function Welcome() {
 
         <h1 className={styles.welcomeTitle}>Welcome aboard, {displayName}!</h1>
         <p className={styles.welcomeSub}>
-          Your PlayByPlay Anime account is ready and your 10 free credits are
+          Your PlayByPlay Anime account is ready and your 100 free credits are
           waiting. Install the app on your phone and sign in{' '}
           {email ? (
             <>
@@ -115,7 +115,7 @@ export default function Welcome() {
 
       <div className={styles.signinHint}>
         <strong>Tip.</strong> On your phone, open PlayByPlay Anime, tap{' '}
-        <strong>Sign In</strong>, and enter the same email and password you used to register. Your 10 welcome credits will be ready on the Credits tab.
+        <strong>Sign In</strong>, and enter the same email and password you used to register. Your 100 welcome credits will be ready on the Credits tab.
       </div>
 
       <Link to="/" className={styles.backLink}>

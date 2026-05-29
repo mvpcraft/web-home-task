@@ -81,7 +81,7 @@ export default function LiveMatch() {
             <CheckCircle2 size={16} />
           </span>
           <span>
-            <strong>2 credits to enter</strong>, then 2 credits every 5 minutes
+            <strong>20 credits to enter</strong>, then 20 credits every 5 minutes
             you stay in the session.
           </span>
         </li>
