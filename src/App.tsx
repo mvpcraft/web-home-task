@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Privacy from './pages/Privacy'
@@ -7,9 +7,6 @@ import Terms from './pages/Terms'
 import Contact from './pages/Contact'
 import JoinLayout from './pages/Join/JoinLayout'
 import Join from './pages/Join/Join'
-import Signup from './pages/Join/Signup'
-import LiveMatch from './pages/Join/LiveMatch'
-import Welcome from './pages/Join/Welcome'
 import AdminLogin from './pages/Admin/AdminLogin'
 import AdminDashboard from './pages/Admin/AdminDashboard'
 import AdminMarketing from './pages/Admin/AdminMarketing'
@@ -25,6 +22,15 @@ function RequireAdmin({ children }: { children: ReactNode }) {
   return <>{children}</>
 }
 
+// Old onboarding split signup / live-match / welcome across separate URLs.
+// We've collapsed everything into /join, but marketing emails and shared
+// links in the wild still point at the old paths. Preserve query params
+// (?ref=, ?utm_source=) so referral attribution survives the redirect.
+function JoinRedirect() {
+  const { search } = useLocation()
+  return <Navigate to={`/join${search}`} replace />
+}
+
 function App() {
   return (
     <Routes>
@@ -36,9 +42,12 @@ function App() {
       </Route>
       <Route element={<JoinLayout />}>
         <Route path="/join" element={<Join />} />
-        <Route path="/join/signup" element={<Signup />} />
-        <Route path="/join/live-match" element={<LiveMatch />} />
-        <Route path="/join/welcome" element={<Welcome />} />
+        {/* Back-compat redirects: old marketing emails / shared links pointed at
+            these step-specific URLs. Forwarding with `?...` would lose query
+            params, so we pass them through. */}
+        <Route path="/join/signup" element={<JoinRedirect />} />
+        <Route path="/join/live-match" element={<JoinRedirect />} />
+        <Route path="/join/welcome" element={<JoinRedirect />} />
       </Route>
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route

@@ -314,18 +314,12 @@
    Feature list (landing)
    ────────────────────────────────────────── */
 .featureList {
-  display: grid;
-  /* Tightened gap + grid to 2 columns so the feature block reads as a
-     supporting evidence panel under the top CTA rather than a long scroll. */
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
   margin-bottom: 28px;
-}
-
-@media (max-width: 560px) {
-  .featureList {
-    grid-template-columns: 1fr;
-  }
+  padding: 0;
+  list-style: none;
 }
 
 .featureItem {

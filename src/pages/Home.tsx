@@ -179,7 +179,7 @@ export default function Home() {
             <div className={styles.heroCtas}>
               <Link to="/join" className={styles.btnPrimary}>
                 <Smartphone size={18} />
-                Start Free
+                Get 100 free credits
               </Link>
               <a href="#features" className={styles.btnSecondary}>
                 Learn More
@@ -192,7 +192,7 @@ export default function Home() {
               </div>
               <div className={styles.statDivider} />
               <div className={styles.stat}>
-                <strong>10</strong>
+                <strong>100</strong>
                 <span>Welcome Credits</span>
               </div>
               <div className={styles.statDivider} />

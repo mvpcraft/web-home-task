@@ -1,33 +1,17 @@
 import { useEffect } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { Check } from 'lucide-react'
 import { trackPageView } from '../../lib/analytics'
 import styles from './Join.module.css'
 
-const STEPS = [
-  { path: '/join', label: 'Welcome' },
-  { path: '/join/signup', label: 'Create Account' },
-  { path: '/join/live-match', label: 'Watch Live' },
-  { path: '/join/welcome', label: 'Get the App' },
-]
-
-function getStepIndex(pathname: string) {
-  const match = STEPS.findIndex((s) => s.path === pathname)
-  return match === -1 ? 0 : match
-}
-
 export default function JoinLayout() {
   const { pathname } = useLocation()
-  const current = getStepIndex(pathname)
 
-  // Fire a page_view event whenever the user lands on a new onboarding
-  // route. Putting this in the layout means each Join page doesn't need to
+  // Fire a page_view event whenever the user lands on a Join route.
+  // Putting this in the layout means each Join page doesn't need to
   // remember to track itself - they only declare event-specific calls.
   useEffect(() => {
     trackPageView()
   }, [pathname])
-
-  const showStepper = pathname !== '/join'
 
   return (
     <div className={styles.shell}>
@@ -42,28 +26,6 @@ export default function JoinLayout() {
           <img src="/logo.png" alt="" className={styles.brandIcon} />
           <span className={styles.brandName}>PlayByPlay Anime</span>
         </Link>
-
-        {showStepper && (
-          <ol className={styles.stepper} aria-label="Onboarding progress">
-            {STEPS.map((step, i) => {
-              const isDone = i < current
-              const isActive = i === current
-              return (
-                <li
-                  key={step.path}
-                  className={`${styles.step} ${isActive ? styles.stepActive : ''} ${
-                    isDone ? styles.stepDone : ''
-                  }`}
-                >
-                  <span className={styles.stepDot}>
-                    {isDone ? <Check size={14} strokeWidth={3} /> : i + 1}
-                  </span>
-                  <span className={styles.stepLabel}>{step.label}</span>
-                </li>
-              )
-            })}
-          </ol>
-        )}
       </header>
 
       <main className={styles.main}>

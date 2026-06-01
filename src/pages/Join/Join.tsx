@@ -1,63 +1,261 @@
+import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   ArrowRight, MessageCircle, BarChart3, ShieldCheck,
-  Sparkles, Zap, Apple, Trophy, Users, Star,
+  Sparkles, Zap, Trophy, Users, Star,
+  Mail, Lock, Eye, EyeOff, AlertCircle, Loader2, Gift,
+  Apple, Smartphone, ArrowLeft,
 } from 'lucide-react'
-import { track } from '../../lib/analytics'
+import { setAnalyticsUserId, track } from '../../lib/analytics'
 import styles from './Join.module.css'
-
-// Single source of truth for the testimonial block. Names + roles match the
-// public Home page so visitors who hop between the two pages don't see a
-// different cast of supporters. Keep edits in sync with src/pages/Home.tsx.
-const TESTIMONIALS = [
-  {
-    name: 'Daniel Mercer',
-    role: 'Football Journalist',
-    quote:
-      'The AI analysis has become part of my pre-match routine. The breakdown actually explains the reasoning instead of just printing a number.',
-  },
-  {
-    name: 'Priya Shah',
-    role: 'Product Designer',
-    quote:
-      "Talking to Victoria during a live match is genuinely new. She reacts in real time and the voice replies feel natural, not scripted.",
-  },
-  {
-    name: 'Marcus Okafor',
-    role: 'Data Analyst',
-    quote:
-      'One app for five leagues across Europe and the MLS, clean fixtures, accurate kick-off times in my timezone. I use it every matchday.',
-  },
-] as const
-
-const IOS_STORE_URL =
-  'https://apps.apple.com/us/app/playbyplay-anime/id6760711721'
 
 // Bumped each time the page is materially rewritten so we can split analytics
 // between the old and new copy in the admin dashboard. Increment, don't
 // rename - past variant rows in the DB stay legible.
-const COPY_VARIANT = 'v2'
+const COPY_VARIANT = 'v4'
+
+const IOS_STORE_URL = 'https://apps.apple.com/us/app/playbyplay-anime/id6760711721'
+
+const API_BASE =
+  (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') || ''
+
+type InviterInfo = {
+  username: string
+  avatar: string
+  bonusCredits: number
+}
+
+const deriveUsername = (email: string): string => {
+  const prefix = email.split('@')[0] || 'user'
+  const cleaned = prefix.replace(/[^a-zA-Z0-9_]/g, '_').slice(0, 20)
+  return cleaned || 'user'
+}
 
 export default function Join() {
-  // Preserve marketing attribution across the Join → Signup hop. Marketing URLs
-  // land on /join with `?utm_source=slack|discord|gmail|linkedin|…`; if we drop
-  // the query string here, Signup never sees it and the user gets recorded as
-  // organic. We also forward `ref` so referral links work even if they hit /join.
+  // Preserve marketing attribution. Marketing URLs land on /join with
+  // `?utm_source=slack|discord|gmail|linkedin|…` and `?ref=...` for referrals.
+  // Both feed into the signup POST so the backend can persist them.
   const [params] = useSearchParams()
-  const forward = new URLSearchParams()
-  const utmSource = params.get('utm_source')
-  const ref = params.get('ref')
-  if (utmSource) forward.set('utm_source', utmSource)
-  if (ref) forward.set('ref', ref)
-  const signupHref = forward.toString()
-    ? `/join/signup?${forward.toString()}`
-    : '/join/signup'
+  const referralCode = (params.get('ref') || '').trim()
+  const utmSource = (params.get('utm_source') || '').trim()
 
+  // Form state
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  // Success state — toggles the page from landing+form to "you're in".
+  const [submitted, setSubmitted] = useState(false)
+  const [createdUsername, setCreatedUsername] = useState('')
+
+  // Inviter lookup. We validate the ref code against the backend so we can
+  // show the inviter's username and reassure the new user the reward is real.
+  // A failed lookup is silent - we still submit the code at signup time in
+  // case it's valid and the pre-flight just failed.
+  const [inviter, setInviter] = useState<InviterInfo | null>(null)
+
+  useEffect(() => {
+    if (!referralCode) return
+    let cancelled = false
+    ;(async () => {
+      try {
+        const res = await fetch(
+          `${API_BASE}/api/referrals/validate?code=${encodeURIComponent(referralCode)}`,
+        )
+        const data = await res.json()
+        if (!cancelled && data?.valid && data.inviter) {
+          setInviter({
+            username: data.inviter.username,
+            avatar: data.inviter.avatar,
+            bonusCredits: data.bonusCredits ?? 100,
+          })
+        }
+      } catch {
+        // swallow - banner just won't render
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [referralCode])
+
+  const validate = (): string | null => {
+    if (!email.trim()) return 'Please enter your email address.'
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'That email address does not look valid.'
+    if (password.length < 8) return 'Password must be at least 8 characters.'
+    return null
+  }
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setError(null)
+
+    const issue = validate()
+    if (issue) {
+      setError(issue)
+      return
+    }
+
+    setSending(true)
+
+    const cleanEmail = email.trim().toLowerCase()
+    const username = deriveUsername(cleanEmail)
+
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: cleanEmail,
+          username,
+          password,
+          ...(referralCode ? { referralCode } : {}),
+          ...(utmSource ? { utmSource } : {}),
+        }),
+      })
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => '')
+        let message = 'We could not create your account. Please try again.'
+        try {
+          const parsed = JSON.parse(text)
+          if (parsed?.error || parsed?.message) {
+            message = parsed.error || parsed.message
+          }
+        } catch {
+          if (text) message = text
+        }
+        throw new Error(message)
+      }
+
+      const data = (await res.json().catch(() => null)) as
+        | { user?: { id?: string } }
+        | null
+      if (data?.user?.id) {
+        setAnalyticsUserId(data.user.id)
+      }
+      track('signup_completed', {
+        hasReferral: Boolean(referralCode),
+        utmSource: utmSource || null,
+        variant: COPY_VARIANT,
+      })
+
+      setCreatedUsername(username)
+      setEmail(cleanEmail)
+      setSubmitted(true)
+    } catch (err) {
+      const msg =
+        err instanceof Error && err.message
+          ? err.message
+          : 'We could not reach the server. Please check your connection and try again.'
+      setError(msg)
+    } finally {
+      setSending(false)
+    }
+  }
+
+  // ── Success state ─────────────────────────────────────────────────────
+  if (submitted) {
+    return (
+      <div className={`${styles.card} ${styles.cardWide}`}>
+        <div className={styles.successHeader}>
+          <div className={styles.checkCircle}>
+            <svg viewBox="0 0 24 24" width="48" height="48" aria-hidden="true">
+              <path d="M5 12.5l4.5 4.5L19 7.5" />
+            </svg>
+          </div>
+
+          <div className={styles.badgeRow}>
+            <span className={styles.badge}>
+              <Gift size={14} /> 100 welcome credits added
+            </span>
+            <span className={styles.badge}>
+              <Sparkles size={14} /> Account ready
+            </span>
+          </div>
+
+          <h1 className={styles.welcomeTitle}>Welcome aboard, {createdUsername}!</h1>
+          <p className={styles.welcomeSub}>
+            Your PlayByPlay Anime account is ready and your 100 free credits are
+            waiting. Install the app on your phone and sign in with{' '}
+            <strong style={{ color: 'var(--text)' }}>{email}</strong> to meet
+            Victoria.
+          </p>
+
+          {inviter && (
+            <div className={styles.inviteRewardBadge}>
+              <Gift size={14} />
+              <span>
+                Your {inviter.bonusCredits}-credit bonus unlocks on your first
+                credits purchase. {inviter.username} earns one too.
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className={styles.downloadGrid}>
+          <a
+            href={IOS_STORE_URL}
+            className={styles.storeBtn}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track('ios_download_clicked', { location: 'join_success' })}
+          >
+            <span className={styles.storeIcon}>
+              <Apple size={20} />
+            </span>
+            <span className={styles.storeText}>
+              <span>Download on</span>
+              <strong>the App Store</strong>
+            </span>
+          </a>
+
+          {/* Android is not yet shipped - disabled with a Coming Soon tooltip.
+              We still track the click so we can quantify Android demand. */}
+          <span className={styles.comingSoonWrap} data-tooltip="Coming soon">
+            <button
+              type="button"
+              disabled
+              aria-disabled="true"
+              className={`${styles.storeBtn} ${styles.storeBtnDisabled}`}
+              onClick={() =>
+                track('android_clicked_coming_soon', { location: 'join_success' })
+              }
+            >
+              <span className={styles.storeIcon}>
+                <Smartphone size={20} />
+              </span>
+              <span className={styles.storeText}>
+                <span>Get it on</span>
+                <strong>
+                  Google Play
+                  <span className={styles.soonBadge}>Soon</span>
+                </strong>
+              </span>
+            </button>
+          </span>
+        </div>
+
+        <div className={styles.signinHint}>
+          <strong>Tip.</strong> On your phone, open PlayByPlay Anime, tap{' '}
+          <strong>Sign In</strong>, and enter the same email and password you
+          used to register. Your 100 welcome credits will be ready on the Credits tab.
+        </div>
+
+        <Link to="/" className={styles.backLink}>
+          <ArrowLeft size={14} /> Back to home
+        </Link>
+      </div>
+    )
+  }
+
+  // ── Landing + form state ──────────────────────────────────────────────
   return (
     <div className={styles.card}>
       {/* Hero visual: gives the page an instantly readable "this is Victoria"
-          identity so the headline doesn't have to do all the explaining.
-          Sits above the eyebrow so it reads as a poster rather than a thumb. */}
+          identity so the headline doesn't have to do all the explaining. */}
       <div className={styles.heroImageWrap} aria-hidden="true">
         <img
           src="/hero.png"
@@ -66,6 +264,23 @@ export default function Join() {
         />
         <div className={styles.heroImageFade} />
       </div>
+
+      {inviter && (
+        <div className={styles.inviteBanner} role="status">
+          <span className={styles.inviteBannerIcon} aria-hidden="true">
+            <Gift size={20} />
+          </span>
+          <div>
+            <div className={styles.inviteBannerTitle}>
+              {inviter.avatar} {inviter.username} invited you to Play by Play
+            </div>
+            <div className={styles.inviteBannerBody}>
+              Sign up and buy any credits pack - you'll each earn{' '}
+              <strong>{inviter.bonusCredits} bonus credits</strong>.
+            </div>
+          </div>
+        </div>
+      )}
 
       <span className={styles.eyebrow}>
         <Sparkles size={14} />
@@ -84,34 +299,112 @@ export default function Join() {
         the World Cup 2026.
       </p>
 
-      {/* Above-the-fold CTA. The label names the concrete reward (100 credits)
-          instead of the vague "Get started" because audits keep flagging
-          benefit-led copy as the single biggest CTA conversion lever. */}
-      <div className={styles.topCtaRow}>
-        <Link
-          to={signupHref}
+      {/* Inline signup form. Replaces the old "click through to /join/signup"
+          flow with a single-page conversion: the user reads the hero, sees
+          the form right there, signs up. No extra click. */}
+      <form className={styles.form} onSubmit={handleSubmit} noValidate>
+        {error && (
+          <div className={styles.errorBanner} role="alert">
+            <AlertCircle size={18} style={{ flexShrink: 0, marginTop: 1 }} />
+            <span>{error}</span>
+          </div>
+        )}
+
+        <div className={styles.field}>
+          <label htmlFor="email" className={styles.label}>
+            Email address
+          </label>
+          <div className={styles.inputWrap}>
+            <span className={styles.inputIcon}>
+              <Mail size={18} />
+            </span>
+            <input
+              id="email"
+              type="email"
+              autoComplete="email"
+              className={`${styles.input} ${styles.inputWithIcon}`}
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={sending}
+              required
+            />
+          </div>
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="password" className={styles.label}>
+            Password <span className={styles.labelHint}>(8+ characters)</span>
+          </label>
+          <div className={styles.inputWrap}>
+            <span className={styles.inputIcon}>
+              <Lock size={18} />
+            </span>
+            <input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="new-password"
+              className={`${styles.input} ${styles.inputWithIcon}`}
+              placeholder="Choose a strong password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={sending}
+              minLength={8}
+              required
+              style={{ paddingRight: 44 }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              className={styles.eyeBtn}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="submit"
           className={`${styles.btn} ${styles.btnPrimary} ${styles.btnLarge} ${styles.btnBlock}`}
+          disabled={sending}
+          aria-busy={sending}
           onClick={() =>
             track('marketing_cta_clicked', {
-              location: 'join_landing_top',
+              location: 'join_inline_form',
               target: 'signup',
               variant: COPY_VARIANT,
             })
           }
         >
-          Get 100 free credits
-          <ArrowRight size={18} />
-        </Link>
+          {sending ? (
+            <>
+              <Loader2 size={18} className={styles.spin} />
+              Creating your account…
+            </>
+          ) : (
+            <>
+              Get 100 free credits
+              <ArrowRight size={18} />
+            </>
+          )}
+        </button>
+
         <p className={styles.ctaHint}>
           <Zap size={14} /> Free account. No card. No ads. No betting. No
           subscription.
         </p>
-      </div>
+
+        <p className={styles.secondaryNote} style={{ textAlign: 'center', marginTop: 4 }}>
+          By creating an account you agree to our{' '}
+          <Link to="/terms">Terms</Link> and{' '}
+          <Link to="/privacy">Privacy Policy</Link>.
+        </p>
+      </form>
 
       {/* Social-proof strip: mixes a user-base claim, breadth-of-coverage,
           and a star rating to address the three things first-time visitors
-          consider - is anyone using it? is it serious? is it good? The App
-          Store badge below doubles as a verification path. */}
+          consider - is anyone using it? is it serious? is it good? */}
       <div className={styles.proofStrip}>
         <div className={styles.proofItem}>
           <Users size={16} />
@@ -136,26 +429,6 @@ export default function Join() {
         </div>
       </div>
 
-      <a
-        href={IOS_STORE_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.appStoreRow}
-        onClick={() =>
-          track('ios_download_clicked', {
-            location: 'join_landing_proof',
-            variant: COPY_VARIANT,
-          })
-        }
-      >
-        <Apple size={18} />
-        <span>
-          <strong>Available now on the App Store</strong>
-          <em>World Cup 2026 ready - tap to install</em>
-        </span>
-        <ArrowRight size={16} />
-      </a>
-
       <ul className={styles.featureList}>
         <li className={styles.featureItem}>
           <span className={styles.featureIcon}>
@@ -164,8 +437,7 @@ export default function Join() {
           <div className={styles.featureBody}>
             <strong>Victoria, live in 3D</strong>
             <span>
-              A rigged anime commentator who talks to you out loud, reacts to
-              goals and red cards in real time, and answers what you ask.
+              Reacts to goals and red cards out loud, in real time.
             </span>
           </div>
         </li>
@@ -176,8 +448,7 @@ export default function Join() {
           <div className={styles.featureBody}>
             <strong>AI match predictions</strong>
             <span>
-              Tap any fixture for home / draw / away probabilities plus a
-              written analysis of why. Re-opening the same prediction is free.
+              Win/draw/away odds with a written analysis. Re-opens are free.
             </span>
           </div>
         </li>
@@ -188,61 +459,11 @@ export default function Join() {
           <div className={styles.featureBody}>
             <strong>Entertainment, not betting</strong>
             <span>
-              No wagering. No odds markets. No ads. Just the match, narrated by
-              someone who cares.
+              No wagering, no odds markets, no ads.
             </span>
           </div>
         </li>
       </ul>
-
-      {/* Testimonials. Same three names appear on the public Home page so
-          the cast of "supporters" stays consistent across the site. */}
-      <section className={styles.testimonialBlock} aria-label="What users say">
-        <h2 className={styles.testimonialHeading}>Loved by football fans</h2>
-        <ul className={styles.testimonialList}>
-          {TESTIMONIALS.map(t => (
-            <li key={t.name} className={styles.testimonialCard}>
-              <div className={styles.testimonialStars} aria-label="5 out of 5 stars">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={12} fill="currentColor" />
-                ))}
-              </div>
-              <p className={styles.testimonialQuote}>{`"${t.quote}"`}</p>
-              <div className={styles.testimonialAuthor}>
-                <span className={styles.testimonialAvatar}>{t.name[0]}</span>
-                <div>
-                  <strong>{t.name}</strong>
-                  <span>{t.role}</span>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <div className={styles.ctaRow}>
-        <Link
-          to={signupHref}
-          className={`${styles.btn} ${styles.btnPrimary} ${styles.btnLarge} ${styles.btnBlock}`}
-          onClick={() =>
-            track('marketing_cta_clicked', {
-              location: 'join_landing_bottom',
-              target: 'signup',
-              variant: COPY_VARIANT,
-            })
-          }
-        >
-          Get 100 free credits
-          <ArrowRight size={18} />
-        </Link>
-      </div>
-
-      <p className={styles.secondaryNote}>
-        Already have an account?{' '}
-        <span>
-          Open PlayByPlay Anime on iOS and sign in with your email.
-        </span>
-      </p>
     </div>
   )
 }
