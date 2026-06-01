@@ -7,6 +7,7 @@ import Terms from './pages/Terms'
 import Contact from './pages/Contact'
 import JoinLayout from './pages/Join/JoinLayout'
 import Join from './pages/Join/Join'
+import JoinTour from './pages/Join/JoinTour'
 import AdminLogin from './pages/Admin/AdminLogin'
 import AdminDashboard from './pages/Admin/AdminDashboard'
 import AdminMarketing from './pages/Admin/AdminMarketing'
@@ -42,6 +43,11 @@ function App() {
       </Route>
       <Route element={<JoinLayout />}>
         <Route path="/join" element={<Join />} />
+        {/* /join/tour is the education-first variant for A/B testing against
+            the single-page /join. Both feed the same signup endpoint and
+            tag events with `flow: 'fast' | 'tour'` so admin can compare
+            funnel conversion. */}
+        <Route path="/join/tour" element={<JoinTour />} />
         {/* Back-compat redirects: old marketing emails / shared links pointed at
             these step-specific URLs. Forwarding with `?...` would lose query
             params, so we pass them through. */}

@@ -1,0 +1,602 @@
+/* ──────────────────────────────────────────
+   Tour-specific styles
+   The card frame, buttons, form, store-buttons, and welcome state all come
+   from Join.module.css. This file only adds what's unique to the multi-step
+   tour: the progress strip, step transitions, and the in-step demo cards
+   (commentary transcript, voice exchange, prediction bar).
+   ────────────────────────────────────────── */
+
+/* Progress strip across the top of the card. Six dots so visitors see how
+   far they are at all times. Mobile collapses to a single bar. */
+.progressWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.progressCount {
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  min-width: 56px;
+}
+
+.progressTrack {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+}
+
+.progressDot {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  transition: background 0.4s ease;
+}
+
+.progressDotActive {
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  box-shadow: 0 0 12px rgba(30, 144, 255, 0.4);
+}
+
+.progressDotDone {
+  background: var(--success);
+}
+
+/* ──────────────────────────────────────────
+   Step body
+   ────────────────────────────────────────── */
+.stepBody {
+  animation: stepFade 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes stepFade {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.stepKicker {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary-light);
+  margin-bottom: 10px;
+}
+
+.stepTitle {
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  margin: 0 0 14px;
+  color: var(--text);
+}
+
+.stepTitleAccent {
+  background: linear-gradient(135deg, var(--primary-light), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.stepBody p {
+  margin: 0 0 22px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* ──────────────────────────────────────────
+   Step 1: Victoria intro visual
+   ────────────────────────────────────────── */
+.introHero {
+  position: relative;
+  height: 220px;
+  margin: 6px -8px 24px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0E1530, #1B1E45);
+}
+
+.introHero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 28%;
+}
+
+.introHero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    transparent 55%,
+    rgba(20, 25, 56, 0.95) 100%
+  );
+}
+
+.introBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.introBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.introBadge svg {
+  color: var(--primary-light);
+}
+
+/* ──────────────────────────────────────────
+   Step 2: Live commentary transcript demo
+   ────────────────────────────────────────── */
+.transcript {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  margin-bottom: 22px;
+  border-radius: 16px;
+  background: rgba(10, 14, 39, 0.7);
+  border: 1px solid var(--border);
+}
+
+.transcriptHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+.liveDot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.liveDot::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: livePulse 1.4s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.transcriptLine {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  animation: lineEnter 0.5s ease-out both;
+}
+
+.transcriptLine:nth-child(2) { animation-delay: 0.1s; }
+.transcriptLine:nth-child(3) { animation-delay: 0.3s; }
+.transcriptLine:nth-child(4) { animation-delay: 0.55s; }
+.transcriptLine:nth-child(5) { animation-delay: 0.8s; }
+
+@keyframes lineEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.transcriptAvatar {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: white;
+}
+
+.transcriptText {
+  flex: 1;
+  color: var(--text);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.transcriptText em {
+  font-style: normal;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-light), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.transcriptTag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(255, 64, 129, 0.15);
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  vertical-align: 1px;
+}
+
+.emotionRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.emotionChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.emotionChip span {
+  font-size: 1.05rem;
+}
+
+/* ──────────────────────────────────────────
+   Step 3: Voice exchange demo
+   ────────────────────────────────────────── */
+.voiceDemo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  margin-bottom: 22px;
+  border-radius: 16px;
+  background: rgba(10, 14, 39, 0.7);
+  border: 1px solid var(--border);
+}
+
+.voiceBubble {
+  position: relative;
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  animation: bubbleEnter 0.5s ease-out both;
+}
+
+.voiceBubble:nth-of-type(1) { animation-delay: 0.1s; }
+.voiceBubble:nth-of-type(2) { animation-delay: 0.4s; }
+
+@keyframes bubbleEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.voiceBubbleUser {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.voiceBubbleVictoria {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-bottom-left-radius: 4px;
+}
+
+.voiceBubbleLabel {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+
+.micRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.micPulse {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 64, 129, 0.18);
+  color: var(--accent);
+}
+
+.micPulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  animation: micPulseRing 1.8s ease-out infinite;
+}
+
+@keyframes micPulseRing {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* ──────────────────────────────────────────
+   Step 4: Prediction bar demo
+   ────────────────────────────────────────── */
+.predictionCard {
+  padding: 18px;
+  margin-bottom: 22px;
+  border-radius: 16px;
+  background: rgba(10, 14, 39, 0.7);
+  border: 1px solid var(--border);
+}
+
+.predictionMatchup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+
+.predictionMatchup span:nth-child(2) {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.predictionBar {
+  display: flex;
+  height: 36px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+}
+
+.predictionSegment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: 0.02em;
+  animation: segmentGrow 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: left center;
+}
+
+@keyframes segmentGrow {
+  0% { transform: scaleX(0.3); opacity: 0; }
+  100% { transform: scaleX(1); opacity: 1; }
+}
+
+.predictionSegmentHome {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+.predictionSegmentDraw {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+}
+
+.predictionSegmentAway {
+  background: linear-gradient(135deg, var(--accent), #E91E63);
+}
+
+.predictionLegend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.predictionNote {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.predictionNote strong {
+  color: var(--text);
+}
+
+/* ──────────────────────────────────────────
+   Bottom nav (Back + Next on every step)
+   ────────────────────────────────────────── */
+.navRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.navRowSolo {
+  justify-content: flex-end;
+}
+
+.skipLink {
+  background: none;
+  border: none;
+  padding: 8px 4px;
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+
+.skipLink:hover {
+  color: var(--text);
+}
+
+/* ──────────────────────────────────────────
+   Feature row used on the signup step recap
+   ────────────────────────────────────────── */
+.recapStrip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 10px;
+  margin-bottom: 22px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+}
+
+.recapItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 6px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.recapItem strong {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.recapItem span {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.recapItem svg {
+  color: var(--primary-light);
+  margin-bottom: 2px;
+}
+
+/* ──────────────────────────────────────────
+   Responsive
+   ────────────────────────────────────────── */
+@media (max-width: 560px) {
+  .stepTitle {
+    font-size: 1.55rem;
+  }
+
+  .introHero {
+    height: 170px;
+    margin: 6px -4px 22px;
+  }
+
+  .voiceBubble {
+    max-width: 92%;
+  }
+
+  .recapStrip {
+    grid-template-columns: 1fr;
+  }
+
+  .progressCount {
+    min-width: 48px;
+    font-size: 0.72rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stepBody,
+  .transcriptLine,
+  .voiceBubble,
+  .predictionSegment,
+  .micPulse::after,
+  .liveDot::before {
+    animation: none !important;
+  }
+}

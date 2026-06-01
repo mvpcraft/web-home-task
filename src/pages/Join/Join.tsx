@@ -140,6 +140,7 @@ export default function Join() {
         hasReferral: Boolean(referralCode),
         utmSource: utmSource || null,
         variant: COPY_VARIANT,
+        flow: 'fast',
       })
 
       setCreatedUsername(username)
@@ -201,7 +202,7 @@ export default function Join() {
             className={styles.storeBtn}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => track('ios_download_clicked', { location: 'join_success' })}
+            onClick={() => track('ios_download_clicked', { location: 'join_success', flow: 'fast' })}
           >
             <span className={styles.storeIcon}>
               <Apple size={20} />
@@ -221,7 +222,7 @@ export default function Join() {
               aria-disabled="true"
               className={`${styles.storeBtn} ${styles.storeBtnDisabled}`}
               onClick={() =>
-                track('android_clicked_coming_soon', { location: 'join_success' })
+                track('android_clicked_coming_soon', { location: 'join_success', flow: 'fast' })
               }
             >
               <span className={styles.storeIcon}>
@@ -374,6 +375,7 @@ export default function Join() {
               location: 'join_inline_form',
               target: 'signup',
               variant: COPY_VARIANT,
+              flow: 'fast',
             })
           }
         >
