@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Activity, Users, Clock, AlertCircle, Loader2, RefreshCw,
-  TrendingDown,
+  TrendingDown, ChevronDown, UserCheck, UserCircle2,
 } from 'lucide-react'
 import AdminNav from './AdminNav'
 import {
@@ -92,6 +92,84 @@ function eventLabel(name: string): string {
   return EVENT_LABEL[name] ?? name
 }
 
+/**
+ * Visitor-grouped representation of the recent events stream. Same data the
+ * backend returns, just bucketed by `userId || anonymousId` so the admin can
+ * read it as an activity stream rather than a flat firehose.
+ */
+interface VisitorBucket {
+  key: string
+  userId: string | null
+  anonymousId: string
+  events: RecentEventRow[]   // newest first within the bucket
+  firstAt: string            // oldest event in the bucket
+  lastAt: string             // newest event in the bucket
+  utmSources: string[]       // distinct utm sources across the bucket
+  ip: string | null          // most recent non-null ip
+}
+
+/**
+ * Group a flat event list by visitor identity. The group key is the userId
+ * when we have one, otherwise the anonymousId. We preserve the input order
+ * (newest first) inside each bucket, and order buckets by their most-recent
+ * event so the most-active visitor sits at the top.
+ */
+function groupByVisitor(events: RecentEventRow[]): VisitorBucket[] {
+  const buckets = new Map<string, VisitorBucket>()
+
+  for (const ev of events) {
+    const key = ev.userId || ev.anonymousId
+    let bucket = buckets.get(key)
+    if (!bucket) {
+      bucket = {
+        key,
+        userId: ev.userId,
+        anonymousId: ev.anonymousId,
+        events: [],
+        firstAt: ev.createdAt,
+        lastAt: ev.createdAt,
+        utmSources: [],
+        ip: ev.ip,
+      }
+      buckets.set(key, bucket)
+    }
+
+    bucket.events.push(ev)
+    // Track time span. `events` arrives newest-first so the first push sets
+    // `lastAt` and later pushes only pull `firstAt` backwards.
+    if (ev.createdAt < bucket.firstAt) bucket.firstAt = ev.createdAt
+    if (ev.createdAt > bucket.lastAt) bucket.lastAt = ev.createdAt
+
+    if (ev.utmSource && !bucket.utmSources.includes(ev.utmSource)) {
+      bucket.utmSources.push(ev.utmSource)
+    }
+    // Prefer the most recent non-null IP. Since events arrive newest first,
+    // the first non-null one wins.
+    if (!bucket.ip && ev.ip) bucket.ip = ev.ip
+    // Promote anonymous → known if any event in the bucket has a userId.
+    if (!bucket.userId && ev.userId) bucket.userId = ev.userId
+  }
+
+  return Array.from(buckets.values()).sort((a, b) =>
+    a.lastAt < b.lastAt ? 1 : a.lastAt > b.lastAt ? -1 : 0,
+  )
+}
+
+function visitorPrimaryLabel(bucket: VisitorBucket): string {
+  return bucket.userId
+    ? `user ${bucket.userId.slice(-6)}`
+    : `anon ${bucket.anonymousId.slice(0, 8)}`
+}
+
+function visitorSubLabel(bucket: VisitorBucket): string {
+  // Always show the anon id underneath so registered + pre-registered events
+  // are clearly the same visitor. If there's no userId, we already used the
+  // anon id as the primary label - in that case show "anonymous".
+  return bucket.userId
+    ? `anon ${bucket.anonymousId.slice(0, 8)}`
+    : 'anonymous'
+}
+
 export default function AdminAnalytics() {
   const navigate = useNavigate()
 
@@ -99,6 +177,27 @@ export default function AdminAnalytics() {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Recent-events view mode. "grouped" is the Amplitude-style activity stream
+  // bucketed by visitor; "flat" is the legacy chronological table - handy when
+  // debugging an event that should have fired but didn't.
+  const [recentView, setRecentView] = useState<'grouped' | 'flat'>('grouped')
+  // Track which visitor groups are expanded. Using a Set keeps toggle cheap
+  // and lets the default (all collapsed) read as an empty Set.
+  const [expandedVisitors, setExpandedVisitors] = useState<Set<string>>(new Set())
+
+  const visitorBuckets = useMemo(
+    () => (data ? groupByVisitor(data.recent) : []),
+    [data],
+  )
+
+  const toggleVisitor = useCallback((key: string) => {
+    setExpandedVisitors(prev => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }, [])
 
   const fetchAnalytics = useCallback(
     async (showSpinner = true) => {
@@ -331,18 +430,162 @@ export default function AdminAnalytics() {
             )}
           </section>
 
-          {/* Recent events */}
+          {/* Recent events - grouped by visitor by default (Amplitude-style
+              activity stream), with a flat fallback for debugging. */}
           <section className={styles.section}>
-            <div className={styles.sectionHead}>
-              <h2 className={styles.sectionTitle}>Recent events</h2>
-              <p className={styles.sectionSub}>
-                The latest 100 events, newest first. Hover a long string to see
-                the full value.
-              </p>
+            <div className={styles.sectionHead} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, flexWrap: 'wrap' }}>
+              <div>
+                <h2 className={styles.sectionTitle}>Recent events</h2>
+                <p className={styles.sectionSub}>
+                  {recentView === 'grouped'
+                    ? <>Grouped by visitor across the latest 100 events. Click a row to expand the timeline.</>
+                    : <>The latest 100 events, newest first. Hover a long string to see the full value.</>}
+                </p>
+              </div>
+              <div className={styles.viewToggle} role="tablist" aria-label="Recent events view">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={recentView === 'grouped'}
+                  className={`${styles.viewToggleBtn} ${recentView === 'grouped' ? styles.viewToggleBtnActive : ''}`}
+                  onClick={() => setRecentView('grouped')}
+                >
+                  By visitor
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={recentView === 'flat'}
+                  className={`${styles.viewToggleBtn} ${recentView === 'flat' ? styles.viewToggleBtnActive : ''}`}
+                  onClick={() => setRecentView('flat')}
+                >
+                  Flat
+                </button>
+              </div>
             </div>
 
             {data.recent.length === 0 ? (
               <div className={styles.empty}>No events recorded yet.</div>
+            ) : recentView === 'grouped' ? (
+              <div className={styles.visitorList}>
+                {visitorBuckets.map(bucket => {
+                  const open = expandedVisitors.has(bucket.key)
+                  const known = Boolean(bucket.userId)
+                  return (
+                    <div
+                      key={bucket.key}
+                      className={`${styles.visitorRow} ${open ? styles.visitorRowOpen : ''}`}
+                    >
+                      <button
+                        type="button"
+                        className={styles.visitorHeader}
+                        onClick={() => toggleVisitor(bucket.key)}
+                        aria-expanded={open}
+                      >
+                        <span
+                          className={`${styles.visitorAvatar} ${known ? styles.visitorAvatarKnown : ''}`}
+                          aria-hidden="true"
+                        >
+                          {known ? <UserCheck size={16} /> : <UserCircle2 size={16} />}
+                        </span>
+
+                        <span className={styles.visitorIdent}>
+                          <span className={styles.visitorIdentMain}>
+                            {visitorPrimaryLabel(bucket)}
+                          </span>
+                          <span className={styles.visitorIdentSub}>
+                            {visitorSubLabel(bucket)}
+                          </span>
+                        </span>
+
+                        <span className={styles.visitorCount}>
+                          {bucket.events.length} event{bucket.events.length === 1 ? '' : 's'}
+                        </span>
+
+                        <span className={styles.visitorMeta}>
+                          <span className={styles.visitorMetaLine}>
+                            {formatRelativeTime(bucket.lastAt)}
+                          </span>
+                          {bucket.firstAt !== bucket.lastAt && (
+                            <span className={styles.visitorMetaSub}>
+                              first seen {formatRelativeTime(bucket.firstAt)}
+                            </span>
+                          )}
+                        </span>
+
+                        <span className={styles.visitorUtm}>
+                          {bucket.utmSources.length === 0 ? (
+                            <span className={styles.userEmail}>organic</span>
+                          ) : bucket.utmSources.length === 1 ? (
+                            <span className={styles.sourcePill}>
+                              {bucket.utmSources[0]}
+                            </span>
+                          ) : (
+                            <span
+                              className={styles.visitorUtmMixed}
+                              title={bucket.utmSources.join(', ')}
+                            >
+                              mixed ({bucket.utmSources.length})
+                            </span>
+                          )}
+                        </span>
+
+                        <span className={styles.visitorIp} title={bucket.ip || ''}>
+                          {bucket.ip || '—'}
+                        </span>
+
+                        <span
+                          className={`${styles.visitorChevron} ${open ? styles.visitorChevronOpen : ''}`}
+                          aria-hidden="true"
+                        >
+                          <ChevronDown size={16} />
+                        </span>
+                      </button>
+
+                      {open && (
+                        <div className={styles.eventTimeline}>
+                          {bucket.events.map(ev => {
+                            const propsJson = Object.keys(ev.properties).length > 0
+                              ? JSON.stringify(ev.properties)
+                              : null
+                            return (
+                              <div
+                                key={ev.id}
+                                className={`${styles.eventRow} ${ev.eventName === 'signup_completed' ? styles.eventRowSignup : ''}`}
+                              >
+                                <span
+                                  className={styles.eventWhen}
+                                  title={ev.createdAt}
+                                >
+                                  {formatRelativeTime(ev.createdAt)}
+                                </span>
+                                <span className={styles.sourcePill}>
+                                  {ev.eventName}
+                                </span>
+                                <span className={styles.eventPath}>
+                                  {ev.path || '—'}
+                                </span>
+                                {propsJson ? (
+                                  <span
+                                    className={styles.eventProps}
+                                    title={propsJson}
+                                  >
+                                    {propsJson.length > 60
+                                      ? `${propsJson.slice(0, 60)}…`
+                                      : propsJson}
+                                  </span>
+                                ) : (
+                                  <span className={styles.userEmail}>—</span>
+                                )}
+                              </div>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
             ) : (
               <div className={styles.tableWrap}>
                 <table className={styles.table}>
