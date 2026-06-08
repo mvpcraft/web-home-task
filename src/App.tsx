@@ -14,6 +14,7 @@ import AdminDashboard from './pages/Admin/AdminDashboard'
 import AdminMarketing from './pages/Admin/AdminMarketing'
 import AdminAnalytics from './pages/Admin/AdminAnalytics'
 import AdminUnsubscribes from './pages/Admin/AdminUnsubscribes'
+import AdminEmailStats from './pages/Admin/AdminEmailStats'
 import { getAdminSession } from './pages/Admin/adminAuth'
 
 // Route guard for /admin/*. No session → bounce to /admin/login. The dashboard
@@ -89,6 +90,14 @@ function App() {
         element={
           <RequireAdmin>
             <AdminUnsubscribes />
+          </RequireAdmin>
+        }
+      />
+      <Route
+        path="/admin/email-stats"
+        element={
+          <RequireAdmin>
+            <AdminEmailStats />
           </RequireAdmin>
         }
       />
