@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 import Contact from './pages/Contact'
+import Unsubscribe from './pages/Unsubscribe'
 import JoinLayout from './pages/Join/JoinLayout'
 import Join from './pages/Join/Join'
 import JoinTour from './pages/Join/JoinTour'
@@ -12,6 +13,7 @@ import AdminLogin from './pages/Admin/AdminLogin'
 import AdminDashboard from './pages/Admin/AdminDashboard'
 import AdminMarketing from './pages/Admin/AdminMarketing'
 import AdminAnalytics from './pages/Admin/AdminAnalytics'
+import AdminUnsubscribes from './pages/Admin/AdminUnsubscribes'
 import { getAdminSession } from './pages/Admin/adminAuth'
 
 // Route guard for /admin/*. No session → bounce to /admin/login. The dashboard
@@ -41,6 +43,8 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/contact" element={<Contact />} />
       </Route>
+      {/* Public unsubscribe landing — reached from the marketing email link. */}
+      <Route path="/unsubscribe" element={<Unsubscribe />} />
       <Route element={<JoinLayout />}>
         <Route path="/join" element={<Join />} />
         {/* /join/tour is the education-first variant for A/B testing against
@@ -77,6 +81,14 @@ function App() {
         element={
           <RequireAdmin>
             <AdminAnalytics />
+          </RequireAdmin>
+        }
+      />
+      <Route
+        path="/admin/unsubscribes"
+        element={
+          <RequireAdmin>
+            <AdminUnsubscribes />
           </RequireAdmin>
         }
       />

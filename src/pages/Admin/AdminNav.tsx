@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Mail, Activity, LogOut } from 'lucide-react'
+import { LayoutDashboard, Mail, Activity, LogOut, MailX } from 'lucide-react'
 import { clearAdminSession, getAdminSession } from './adminAuth'
 import styles from './Admin.module.css'
 
@@ -53,6 +53,15 @@ export default function AdminNav() {
         >
           <Mail size={16} />
           Marketing
+        </NavLink>
+        <NavLink
+          to="/admin/unsubscribes"
+          className={({ isActive }) =>
+            `${styles.adminNavTab} ${isActive ? styles.adminNavTabActive : ''}`
+          }
+        >
+          <MailX size={16} />
+          Unsubscribes
         </NavLink>
       </nav>
 
