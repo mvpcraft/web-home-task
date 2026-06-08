@@ -29,6 +29,7 @@ export type AnalyticsEvent =
   | 'page_view'
   | 'signup_completed'
   | 'ios_download_clicked'
+  | 'android_download_clicked'
   | 'android_clicked_coming_soon'
   | 'live_match_understood'
   | 'live_match_continued'

@@ -4,7 +4,7 @@ import {
   ArrowRight, ArrowLeft, Sparkles, Mic, BarChart3, Trophy,
   Mail, Lock, Eye, EyeOff, AlertCircle, Loader2, Gift,
   Apple, Smartphone, CheckCircle2, MessageCircle, ShieldCheck,
-  Globe, Volume2,
+  Globe, Volume2, Languages,
 } from 'lucide-react'
 import { setAnalyticsUserId, track, trackPageView } from '../../lib/analytics'
 import shared from './Join.module.css'
@@ -12,23 +12,26 @@ import styles from './JoinTour.module.css'
 
 // Bumped each time the tour is materially rewritten so admins can split
 // analytics rows for the multi-step flow without losing earlier variants.
-const TOUR_VARIANT = 'tour-v1'
+// v2: added the "languages" step (7 steps total).
+const TOUR_VARIANT = 'tour-v2'
 
 const IOS_STORE_URL = 'https://apps.apple.com/us/app/playbyplay-anime/id6760711721'
+const ANDROID_STORE_URL = 'https://play.google.com/store/apps/details?id=com.playbyplay.anime'
 
 const API_BASE =
   (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') || ''
 
-// Six discrete steps. Steps 1-4 teach the product; step 5 takes the email;
-// step 6 hands off to the iOS app. The id strings are also sent as analytics
+// Seven discrete steps. Steps 1-5 teach the product; step 6 takes the email;
+// step 7 hands off to the iOS app. The id strings are also sent as analytics
 // properties so the funnel breakdown in admin reads as names not numbers.
 const STEPS = [
-  { id: 'intro', kicker: 'Step 1 of 6' },
-  { id: 'commentary', kicker: 'Step 2 of 6' },
-  { id: 'voice', kicker: 'Step 3 of 6' },
-  { id: 'predictions', kicker: 'Step 4 of 6' },
-  { id: 'signup', kicker: 'Step 5 of 6' },
-  { id: 'app', kicker: 'Step 6 of 6' },
+  { id: 'intro', kicker: 'Step 1 of 7' },
+  { id: 'commentary', kicker: 'Step 2 of 7' },
+  { id: 'voice', kicker: 'Step 3 of 7' },
+  { id: 'languages', kicker: 'Step 4 of 7' },
+  { id: 'predictions', kicker: 'Step 5 of 7' },
+  { id: 'signup', kicker: 'Step 6 of 7' },
+  { id: 'app', kicker: 'Step 7 of 7' },
 ] as const
 
 const deriveUsername = (email: string): string => {
@@ -93,8 +96,8 @@ export default function JoinTour() {
       flow: 'tour',
       variant: TOUR_VARIANT,
     })
-    // Jump to the signup step (index 4 = id 'signup').
-    setStepIndex(4)
+    // Jump to the signup step (index 5 = id 'signup').
+    setStepIndex(5)
   }
 
   const validate = (): string | null => {
@@ -161,8 +164,8 @@ export default function JoinTour() {
 
       setCreatedUsername(username)
       setEmail(cleanEmail)
-      // Advance to the final "get the app" step.
-      setStepIndex(5)
+      // Advance to the final "get the app" step (index 6).
+      setStepIndex(6)
     } catch (err) {
       const msg =
         err instanceof Error && err.message
@@ -187,7 +190,7 @@ export default function JoinTour() {
         <div className={styles.progressWrap}>
           <span className={styles.progressCount}>{currentStep.kicker}</span>
           <div className={styles.progressTrack}>
-            {STEPS.slice(0, 5).map((_, i) => (
+            {STEPS.slice(0, 6).map((_, i) => (
               <span
                 key={i}
                 className={
@@ -216,6 +219,13 @@ export default function JoinTour() {
         )}
         {currentStep.id === 'voice' && (
           <VoiceStep
+            onBack={goBack}
+            onNext={() => goNext('next_to_languages')}
+            onSkip={skipToSignup}
+          />
+        )}
+        {currentStep.id === 'languages' && (
+          <LanguagesStep
             onBack={goBack}
             onNext={() => goNext('next_to_predictions')}
             onSkip={skipToSignup}
@@ -460,7 +470,74 @@ function VoiceStep({
 }
 
 /* ──────────────────────────────────────────
-   Step 4 — AI predictions
+   Step 4 — Languages
+   Shows the seven supported languages so visitors know the commentary and the
+   whole app are not English-only, and that it auto-matches their device.
+   ────────────────────────────────────────── */
+function LanguagesStep({
+  onBack, onNext, onSkip,
+}: {
+  onBack: () => void; onNext: () => void; onSkip: () => void
+}) {
+  return (
+    <>
+      <span className={styles.stepKicker}>Your language</span>
+      <h1 className={styles.stepTitle}>
+        Victoria speaks <span className={styles.stepTitleAccent}>your language</span>.
+      </h1>
+      <p>
+        Live commentary and the entire app come in seven languages. Pick one and
+        Victoria calls the match in it while every screen follows. On first
+        launch the app matches your phone, and you can switch any time from your
+        profile.
+      </p>
+
+      <div className={styles.introBadges}>
+        <span className={styles.introBadge}>
+          <Languages size={14} /> 7 languages
+        </span>
+        <span className={styles.introBadge}>
+          <Globe size={14} /> Auto-matched on first launch
+        </span>
+      </div>
+
+      <div className={styles.emotionRow}>
+        <span className={styles.emotionChip}><span>🇬🇧</span> English</span>
+        <span className={styles.emotionChip}><span>🇪🇸</span> Español</span>
+        <span className={styles.emotionChip}><span>🇵🇹</span> Português</span>
+        <span className={styles.emotionChip}><span>🇮🇩</span> Indonesia</span>
+        <span className={styles.emotionChip}><span>🇷🇺</span> Русский</span>
+        <span className={styles.emotionChip}><span>🇳🇱</span> Nederlands</span>
+        <span className={styles.emotionChip}><span>🇮🇹</span> Italiano</span>
+      </div>
+
+      <div className={styles.navRow}>
+        <button
+          type="button"
+          onClick={onBack}
+          className={`${shared.btn} ${shared.btnGhost}`}
+        >
+          <ArrowLeft size={16} /> Back
+        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button type="button" onClick={onSkip} className={styles.skipLink}>
+            Skip
+          </button>
+          <button
+            type="button"
+            onClick={onNext}
+            className={`${shared.btn} ${shared.btnPrimary}`}
+          >
+            Next <ArrowRight size={16} />
+          </button>
+        </div>
+      </div>
+    </>
+  )
+}
+
+/* ──────────────────────────────────────────
+   Step 5 — AI predictions
    Shows the prediction bar visualisation plus a snippet of the reasoning
    so it's clear this isn't a number-only output.
    ────────────────────────────────────────── */
@@ -547,7 +624,7 @@ function PredictionsStep({
 }
 
 /* ──────────────────────────────────────────
-   Step 5 — Signup form
+   Step 6 — Signup form
    Mirrors the inline form on /join. Same backend, same validation. Adds a
    small recap strip above the form to remind users what they're getting.
    ────────────────────────────────────────── */
@@ -705,7 +782,7 @@ function SignupStep({
 }
 
 /* ──────────────────────────────────────────
-   Step 6 — Get the app
+   Step 7 — Get the app
    Mirrors the success state from Join.tsx so visitors who arrive via either
    variant land in the same familiar place. iOS link is live; Android is
    gated behind a Coming Soon tooltip, with click still tracked.
@@ -763,32 +840,27 @@ function AppStep({ username, email }: { username: string; email: string }) {
           </span>
         </a>
 
-        <span className={shared.comingSoonWrap} data-tooltip="Coming soon">
-          <button
-            type="button"
-            disabled
-            aria-disabled="true"
-            className={`${shared.storeBtn} ${shared.storeBtnDisabled}`}
-            onClick={() =>
-              track('android_clicked_coming_soon', {
-                location: 'join_tour_app_step',
-                flow: 'tour',
-                variant: TOUR_VARIANT,
-              })
-            }
-          >
-            <span className={shared.storeIcon}>
-              <Smartphone size={20} />
-            </span>
-            <span className={shared.storeText}>
-              <span>Get it on</span>
-              <strong>
-                Google Play
-                <span className={shared.soonBadge}>Soon</span>
-              </strong>
-            </span>
-          </button>
-        </span>
+        <a
+          href={ANDROID_STORE_URL}
+          className={shared.storeBtn}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() =>
+            track('android_download_clicked', {
+              location: 'join_tour_app_step',
+              flow: 'tour',
+              variant: TOUR_VARIANT,
+            })
+          }
+        >
+          <span className={shared.storeIcon}>
+            <Smartphone size={20} />
+          </span>
+          <span className={shared.storeText}>
+            <span>Get it on</span>
+            <strong>Google Play</strong>
+          </span>
+        </a>
       </div>
 
       <div className={shared.signinHint}>

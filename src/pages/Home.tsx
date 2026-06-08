@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
   Zap, Trophy, BarChart3, MessageCircle, Mic, Globe,
-  ChevronDown, ChevronUp, Smartphone, Star, TrendingUp
+  ChevronDown, ChevronUp, Smartphone, Star, TrendingUp, Languages
 } from 'lucide-react'
 import { track } from '../lib/analytics'
 import styles from './Home.module.css'
@@ -19,6 +19,12 @@ const features = [
     title: 'Talk Back With Your Voice',
     description:
       'Hold a two-way conversation while the match plays. Speak into your mic and Victoria listens, transcribes you in real time, and replies with her own voice - ask about a player, debate a decision, or just chat.',
+  },
+  {
+    icon: <Languages size={28} />,
+    title: 'Commentary in 7 Languages',
+    description:
+      'Follow the match in English, Spanish, Portuguese, Indonesian, Russian, Dutch, or Italian. The whole app is translated and Victoria calls the action in your language. On first launch it matches your phone, and you can switch any time from your profile.',
   },
   {
     icon: <BarChart3 size={28} />,
@@ -85,6 +91,10 @@ const faqs = [
   {
     q: 'How do AI match predictions work?',
     a: 'When you open a fixture, you can request an AI prediction. Our backend analyses team form, head-to-head history, and live data from our football data provider, then generates win / draw / loss probabilities along with a written analysis explaining the reasoning. Each prediction costs 10 credits and is cached, so re-opening the same prediction later is free.',
+  },
+  {
+    q: 'Can I use the app in my language?',
+    a: 'Yes. PlayByPlay Anime is available in seven languages: English, Spanish, Portuguese, Indonesian, Russian, Dutch, and Italian. The entire interface is translated, and Victoria delivers her live commentary in the language you choose. On first launch the app matches your device language and falls back to English if your language is not supported. You can change it any time from the Profile tab.',
   },
   {
     q: 'Which leagues and competitions are covered?',
@@ -338,23 +348,16 @@ export default function Home() {
                 <Smartphone size={18} />
                 Download on iOS
               </a>
-              {/* Android is not yet shipped - disabled with a hover tooltip.
-                  Still tracked so we can size Android demand before we ship. */}
-              <span className={styles.comingSoonWrap} data-tooltip="Coming soon">
-                <button
-                  type="button"
-                  disabled
-                  aria-disabled="true"
-                  className={`${styles.btnAccent} ${styles.btnDisabled}`}
-                  onClick={() =>
-                    track('android_clicked_coming_soon', { location: 'home_cta' })
-                  }
-                >
-                  <Smartphone size={18} />
-                  Download on Android
-                  <span className={styles.soonBadge}>Soon</span>
-                </button>
-              </span>
+              <a
+                href="https://play.google.com/store/apps/details?id=com.playbyplay.anime"
+                className={styles.btnAccent}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => track('android_download_clicked', { location: 'home_cta' })}
+              >
+                <Smartphone size={18} />
+                Download on Android
+              </a>
             </div>
           </div>
         </div>

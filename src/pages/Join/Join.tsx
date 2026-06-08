@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   ArrowRight, MessageCircle, BarChart3, ShieldCheck,
-  Sparkles, Zap, Trophy, Users, Star,
+  Sparkles, Zap, Trophy, Users, Star, Languages,
   Mail, Lock, Eye, EyeOff, AlertCircle, Loader2, Gift,
   Apple, Smartphone, ArrowLeft,
 } from 'lucide-react'
@@ -12,9 +12,10 @@ import styles from './Join.module.css'
 // Bumped each time the page is materially rewritten so we can split analytics
 // between the old and new copy in the admin dashboard. Increment, don't
 // rename - past variant rows in the DB stay legible.
-const COPY_VARIANT = 'v4'
+const COPY_VARIANT = 'v5'
 
 const IOS_STORE_URL = 'https://apps.apple.com/us/app/playbyplay-anime/id6760711721'
+const ANDROID_STORE_URL = 'https://play.google.com/store/apps/details?id=com.playbyplay.anime'
 
 const API_BASE =
   (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') || ''
@@ -213,30 +214,21 @@ export default function Join() {
             </span>
           </a>
 
-          {/* Android is not yet shipped - disabled with a Coming Soon tooltip.
-              We still track the click so we can quantify Android demand. */}
-          <span className={styles.comingSoonWrap} data-tooltip="Coming soon">
-            <button
-              type="button"
-              disabled
-              aria-disabled="true"
-              className={`${styles.storeBtn} ${styles.storeBtnDisabled}`}
-              onClick={() =>
-                track('android_clicked_coming_soon', { location: 'join_success', flow: 'fast' })
-              }
-            >
-              <span className={styles.storeIcon}>
-                <Smartphone size={20} />
-              </span>
-              <span className={styles.storeText}>
-                <span>Get it on</span>
-                <strong>
-                  Google Play
-                  <span className={styles.soonBadge}>Soon</span>
-                </strong>
-              </span>
-            </button>
-          </span>
+          <a
+            href={ANDROID_STORE_URL}
+            className={styles.storeBtn}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track('android_download_clicked', { location: 'join_success', flow: 'fast' })}
+          >
+            <span className={styles.storeIcon}>
+              <Smartphone size={20} />
+            </span>
+            <span className={styles.storeText}>
+              <span>Get it on</span>
+              <strong>Google Play</strong>
+            </span>
+          </a>
         </div>
 
         <div className={styles.signinHint}>
@@ -440,6 +432,17 @@ export default function Join() {
             <strong>Victoria, live in 3D</strong>
             <span>
               Reacts to goals and red cards out loud, in real time.
+            </span>
+          </div>
+        </li>
+        <li className={styles.featureItem}>
+          <span className={styles.featureIcon}>
+            <Languages size={20} />
+          </span>
+          <div className={styles.featureBody}>
+            <strong>Commentary in 7 languages</strong>
+            <span>
+              English, Spanish, Portuguese, Indonesian, Russian, Dutch, or Italian. The whole app follows your pick.
             </span>
           </div>
         </li>
