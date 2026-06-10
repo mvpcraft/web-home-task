@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   Activity, Users, Clock, AlertCircle, Loader2, RefreshCw,
   TrendingDown, ChevronDown, UserCheck, UserCircle2,
+  Smartphone, Monitor, Tablet, Bot,
 } from 'lucide-react'
 import AdminNav from './AdminNav'
 import {
@@ -43,6 +44,7 @@ interface RecentEventRow {
   utmSource: string | null
   ip: string | null
   userAgent: string | null
+  device: string
   referrer: string | null
   createdAt: string
 }
@@ -92,6 +94,29 @@ function eventLabel(name: string): string {
   return EVENT_LABEL[name] ?? name
 }
 
+// Device badge: icon + label. Unknown/missing → desktop.
+function DeviceBadge({ device }: { device: string }) {
+  const d = device || 'desktop'
+  const icon =
+    d === 'mobile' ? <Smartphone size={13} /> :
+    d === 'tablet' ? <Tablet size={13} /> :
+    d === 'bot' ? <Bot size={13} /> :
+    <Monitor size={13} />
+  return (
+    <span
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 5,
+        fontSize: 12, color: d === 'bot' ? '#FF9D5E' : '#9AA3C7',
+        textTransform: 'capitalize',
+      }}
+      title={`Device: ${d}`}
+    >
+      {icon}
+      {d}
+    </span>
+  )
+}
+
 /**
  * Visitor-grouped representation of the recent events stream. Same data the
  * backend returns, just bucketed by `userId || anonymousId` so the admin can
@@ -101,40 +126,53 @@ interface VisitorBucket {
   key: string
   userId: string | null
   anonymousId: string
+  anonCount: number          // distinct anonymousIds merged into this bucket
   events: RecentEventRow[]   // newest first within the bucket
   firstAt: string            // oldest event in the bucket
   lastAt: string             // newest event in the bucket
   utmSources: string[]       // distinct utm sources across the bucket
   ip: string | null          // most recent non-null ip
+  device: string             // most recent device for the bucket
 }
 
 /**
- * Group a flat event list by visitor identity. The group key is the userId
- * when we have one, otherwise the anonymousId. We preserve the input order
- * (newest first) inside each bucket, and order buckets by their most-recent
- * event so the most-active visitor sits at the top.
+ * Group a flat event list by visitor identity. Key precedence:
+ *   userId  →  ip  →  anonymousId
+ * Logged-in events group by user. Anonymous events group by IP, so the same
+ * person hitting an email link without cookies (each request gets a fresh
+ * anonymousId) collapses into a single visitor instead of many. Falls back to
+ * anonymousId when there's no IP. We preserve input order (newest first) inside
+ * each bucket and order buckets by their most-recent event.
+ *
+ * Caveat: IP grouping can merge different people behind the same NAT / corporate
+ * / carrier address. It's a heuristic, not an identity.
  */
 function groupByVisitor(events: RecentEventRow[]): VisitorBucket[] {
   const buckets = new Map<string, VisitorBucket>()
+  const anonSeen = new Map<string, Set<string>>() // bucket key → distinct anon ids
 
   for (const ev of events) {
-    const key = ev.userId || ev.anonymousId
+    const key = ev.userId || ev.ip || ev.anonymousId
     let bucket = buckets.get(key)
     if (!bucket) {
       bucket = {
         key,
         userId: ev.userId,
         anonymousId: ev.anonymousId,
+        anonCount: 0,
         events: [],
         firstAt: ev.createdAt,
         lastAt: ev.createdAt,
         utmSources: [],
         ip: ev.ip,
+        device: ev.device || 'desktop',
       }
       buckets.set(key, bucket)
+      anonSeen.set(key, new Set())
     }
 
     bucket.events.push(ev)
+    anonSeen.get(key)!.add(ev.anonymousId)
     // Track time span. `events` arrives newest-first so the first push sets
     // `lastAt` and later pushes only pull `firstAt` backwards.
     if (ev.createdAt < bucket.firstAt) bucket.firstAt = ev.createdAt
@@ -150,6 +188,10 @@ function groupByVisitor(events: RecentEventRow[]): VisitorBucket[] {
     if (!bucket.userId && ev.userId) bucket.userId = ev.userId
   }
 
+  for (const [key, bucket] of buckets) {
+    bucket.anonCount = anonSeen.get(key)?.size ?? 1
+  }
+
   return Array.from(buckets.values()).sort((a, b) =>
     a.lastAt < b.lastAt ? 1 : a.lastAt > b.lastAt ? -1 : 0,
   )
@@ -162,12 +204,12 @@ function visitorPrimaryLabel(bucket: VisitorBucket): string {
 }
 
 function visitorSubLabel(bucket: VisitorBucket): string {
-  // Always show the anon id underneath so registered + pre-registered events
-  // are clearly the same visitor. If there's no userId, we already used the
-  // anon id as the primary label - in that case show "anonymous".
-  return bucket.userId
-    ? `anon ${bucket.anonymousId.slice(0, 8)}`
-    : 'anonymous'
+  // Known user: show the anon id so registered + pre-registered events read as
+  // the same visitor. Anonymous: if several sessions share this IP, say so;
+  // otherwise just "anonymous".
+  if (bucket.userId) return `anon ${bucket.anonymousId.slice(0, 8)}`
+  if (bucket.anonCount > 1) return `${bucket.anonCount} sessions · same IP`
+  return 'anonymous'
 }
 
 export default function AdminAnalytics() {
@@ -530,8 +572,12 @@ export default function AdminAnalytics() {
                           )}
                         </span>
 
+                        <span style={{ minWidth: 0 }}>
+                          <DeviceBadge device={bucket.device} />
+                        </span>
+
                         <span className={styles.visitorIp} title={bucket.ip || ''}>
-                          {bucket.ip || '—'}
+                          {bucket.ip || '-'}
                         </span>
 
                         <span
@@ -595,6 +641,7 @@ export default function AdminAnalytics() {
                       <th>Event</th>
                       <th>Path</th>
                       <th>Visitor</th>
+                      <th>Device</th>
                       <th>UTM</th>
                       <th>IP</th>
                       <th>Properties</th>
@@ -627,6 +674,9 @@ export default function AdminAnalytics() {
                               anon {row.anonymousId.slice(0, 8)}
                             </span>
                           )}
+                        </td>
+                        <td>
+                          <DeviceBadge device={row.device} />
                         </td>
                         <td>
                           {row.utmSource ? (
