@@ -2,17 +2,20 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   ArrowRight, MessageCircle, BarChart3, ShieldCheck,
-  Sparkles, Zap, Trophy, Users, Star, Languages,
+  Sparkles, Zap, Trophy, Languages,
   Mail, Lock, Eye, EyeOff, AlertCircle, Loader2, Gift,
-  Apple, Smartphone, ArrowLeft,
+  Apple, Smartphone, ArrowLeft, Globe,
 } from 'lucide-react'
 import { setAnalyticsUserId, track } from '../../lib/analytics'
 import styles from './Join.module.css'
 
-// Bumped each time the page is materially rewritten so we can split analytics
-// between the old and new copy in the admin dashboard. Increment, don't
-// rename - past variant rows in the DB stay legible.
-const COPY_VARIANT = 'v5'
+// v6: store-first layout. Primary conversion is now the App Store / Google
+// Play tap (tracked as ios/android_download_clicked with location
+// 'join_landing'); the email+password form is demoted to a collapsed
+// secondary path. Headline re-anchored to the live World Cup. Invented
+// social proof (user counts / star rating) removed until store ratings
+// exist. Compare against v5 rows in admin analytics.
+const COPY_VARIANT = 'v6'
 
 const IOS_STORE_URL = 'https://apps.apple.com/us/app/playbyplay-anime/id6760711721'
 const ANDROID_STORE_URL = 'https://play.google.com/store/apps/details?id=com.playbyplay.anime'
@@ -47,6 +50,11 @@ export default function Join() {
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // The signup form starts collapsed; the store buttons are the primary CTA.
+  // Visitors who arrive with a referral code see the form open, because for
+  // them the account (and the bonus) is the point of the visit.
+  const [formOpen, setFormOpen] = useState(Boolean(referralCode))
+
   // Success state — toggles the page from landing+form to "you're in".
   const [submitted, setSubmitted] = useState(false)
   const [createdUsername, setCreatedUsername] = useState('')
@@ -60,27 +68,37 @@ export default function Join() {
   useEffect(() => {
     if (!referralCode) return
     let cancelled = false
-    ;(async () => {
-      try {
-        const res = await fetch(
-          `${API_BASE}/api/referrals/validate?code=${encodeURIComponent(referralCode)}`,
-        )
-        const data = await res.json()
-        if (!cancelled && data?.valid && data.inviter) {
-          setInviter({
-            username: data.inviter.username,
-            avatar: data.inviter.avatar,
-            bonusCredits: data.bonusCredits ?? 100,
-          })
+      ; (async () => {
+        try {
+          const res = await fetch(
+            `${API_BASE}/api/referrals/validate?code=${encodeURIComponent(referralCode)}`,
+          )
+          const data = await res.json()
+          if (!cancelled && data?.valid && data.inviter) {
+            setInviter({
+              username: data.inviter.username,
+              avatar: data.inviter.avatar,
+              bonusCredits: data.bonusCredits ?? 100,
+            })
+          }
+        } catch {
+          // swallow - banner just won't render
         }
-      } catch {
-        // swallow - banner just won't render
-      }
-    })()
+      })()
     return () => {
       cancelled = true
     }
   }, [referralCode])
+
+  const openForm = () => {
+    setFormOpen(true)
+    track('marketing_cta_clicked', {
+      location: 'join_landing',
+      target: 'open_signup_form',
+      variant: COPY_VARIANT,
+      flow: 'fast',
+    })
+  }
 
   const validate = (): string | null => {
     if (!email.trim()) return 'Please enter your email address.'
@@ -203,7 +221,7 @@ export default function Join() {
             className={styles.storeBtn}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => track('ios_download_clicked', { location: 'join_success', flow: 'fast' })}
+            onClick={() => track('ios_download_clicked', { location: 'join_success', flow: 'fast', variant: COPY_VARIANT })}
           >
             <span className={styles.storeIcon}>
               <Apple size={20} />
@@ -219,7 +237,7 @@ export default function Join() {
             className={styles.storeBtn}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => track('android_download_clicked', { location: 'join_success', flow: 'fast' })}
+            onClick={() => track('android_download_clicked', { location: 'join_success', flow: 'fast', variant: COPY_VARIANT })}
           >
             <span className={styles.storeIcon}>
               <Smartphone size={20} />
@@ -244,14 +262,14 @@ export default function Join() {
     )
   }
 
-  // ── Landing + form state ──────────────────────────────────────────────
+  // ── Landing state: store-first ────────────────────────────────────────
   return (
     <div className={styles.card}>
       {/* Hero visual: gives the page an instantly readable "this is Victoria"
           identity so the headline doesn't have to do all the explaining. */}
       <div className={styles.heroImageWrap} aria-hidden="true">
         <img
-          src="/hero.png"
+          src="/email/playbyplay-email-hero.jpg"
           alt=""
           className={styles.heroImage}
         />
@@ -277,134 +295,186 @@ export default function Join() {
 
       <span className={styles.eyebrow}>
         <Sparkles size={14} />
-        AI FOOTBALL COMMENTARY
+        WORLD CUP 2026 · LIVE NOW
       </span>
 
       <h1 className={styles.title}>
-        Watch live football with{' '}
+        Watch every World Cup match with{' '}
         <span className={styles.titleAccent}>Victoria</span>, your AI anime
         commentator.
       </h1>
 
       <p className={styles.lede}>
-        She reacts to every goal, debates calls with you out loud, and we
-        predict every match before kick-off. Across 13 major leagues, including
-        the World Cup 2026.
+        She calls the action out loud, reacts to every goal, and talks back
+        when you speak. Get the app free and claim 100 welcome credits the
+        moment you sign up inside it.
       </p>
 
-      {/* Inline signup form. Replaces the old "click through to /join/signup"
-          flow with a single-page conversion: the user reads the hero, sees
-          the form right there, signs up. No extra click. */}
-      <form className={styles.form} onSubmit={handleSubmit} noValidate>
-        {error && (
-          <div className={styles.errorBanner} role="alert">
-            <AlertCircle size={18} style={{ flexShrink: 0, marginTop: 1 }} />
-            <span>{error}</span>
-          </div>
-        )}
-
-        <div className={styles.field}>
-          <label htmlFor="email" className={styles.label}>
-            Email address
-          </label>
-          <div className={styles.inputWrap}>
-            <span className={styles.inputIcon}>
-              <Mail size={18} />
-            </span>
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              className={`${styles.input} ${styles.inputWithIcon}`}
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={sending}
-              required
-            />
-          </div>
-        </div>
-
-        <div className={styles.field}>
-          <label htmlFor="password" className={styles.label}>
-            Password <span className={styles.labelHint}>(8+ characters)</span>
-          </label>
-          <div className={styles.inputWrap}>
-            <span className={styles.inputIcon}>
-              <Lock size={18} />
-            </span>
-            <input
-              id="password"
-              type={showPassword ? 'text' : 'password'}
-              autoComplete="new-password"
-              className={`${styles.input} ${styles.inputWithIcon}`}
-              placeholder="Choose a strong password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={sending}
-              minLength={8}
-              required
-              style={{ paddingRight: 44 }}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((v) => !v)}
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
-              className={styles.eyeBtn}
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          className={`${styles.btn} ${styles.btnPrimary} ${styles.btnLarge} ${styles.btnBlock}`}
-          disabled={sending}
-          aria-busy={sending}
-          onClick={() =>
-            track('marketing_cta_clicked', {
-              location: 'join_inline_form',
-              target: 'signup',
-              variant: COPY_VARIANT,
-              flow: 'fast',
-            })
-          }
+      {/* PRIMARY CTA: store badges. The fastest yes a cold visitor can give
+          is a store-page tap, so it comes before any form. Both taps are
+          tracked, so this is also our second conversion goal made reachable
+          from the landing state (previously only the success screen had it). */}
+      <div className={styles.downloadGrid}>
+        <a
+          href={IOS_STORE_URL}
+          className={styles.storeBtn}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => track('ios_download_clicked', { location: 'join_landing', flow: 'fast', variant: COPY_VARIANT })}
         >
-          {sending ? (
-            <>
-              <Loader2 size={18} className={styles.spin} />
-              Creating your account…
-            </>
-          ) : (
-            <>
-              Get 100 free credits
-              <ArrowRight size={18} />
-            </>
-          )}
+          <span className={styles.storeIcon}>
+            <Apple size={20} />
+          </span>
+          <span className={styles.storeText}>
+            <span>Download on</span>
+            <strong>the App Store</strong>
+          </span>
+        </a>
+
+        <a
+          href={ANDROID_STORE_URL}
+          className={styles.storeBtn}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => track('android_download_clicked', { location: 'join_landing', flow: 'fast', variant: COPY_VARIANT })}
+        >
+          <span className={styles.storeIcon}>
+            <Smartphone size={20} />
+          </span>
+          <span className={styles.storeText}>
+            <span>Get it on</span>
+            <strong>Google Play</strong>
+          </span>
+        </a>
+      </div>
+
+      <p className={styles.ctaHint}>
+        <Zap size={14} /> Free app. 100 free credits. No card. No ads. No
+        betting.
+      </p>
+
+      {/* SECONDARY: account creation on the web, collapsed by default.
+          Useful for people on desktop right now, or referral visitors who
+          want the bonus locked to an account before they install. */}
+      <div className={styles.orDivider} role="separator" aria-label="or">
+        <span>or</span>
+      </div>
+
+      {!formOpen ? (
+        <button
+          type="button"
+          className={`${styles.btn} ${styles.btnGhost} ${styles.btnBlock}`}
+          onClick={openForm}
+        >
+          <Mail size={18} />
+          Create your account with email first
         </button>
+      ) : (
+        <form className={styles.form} onSubmit={handleSubmit} noValidate>
+          {error && (
+            <div className={styles.errorBanner} role="alert">
+              <AlertCircle size={18} style={{ flexShrink: 0, marginTop: 1 }} />
+              <span>{error}</span>
+            </div>
+          )}
 
-        <p className={styles.ctaHint}>
-          <Zap size={14} /> Free account. No card. No ads. No betting. No
-          subscription.
-        </p>
+          <div className={styles.field}>
+            <label htmlFor="email" className={styles.label}>
+              Email address
+            </label>
+            <div className={styles.inputWrap}>
+              <span className={styles.inputIcon}>
+                <Mail size={18} />
+              </span>
+              <input
+                id="email"
+                type="email"
+                autoComplete="email"
+                className={`${styles.input} ${styles.inputWithIcon}`}
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={sending}
+                required
+              />
+            </div>
+          </div>
 
-        <p className={styles.secondaryNote} style={{ textAlign: 'center', marginTop: 4 }}>
-          By creating an account you agree to our{' '}
-          <Link to="/terms">Terms</Link> and{' '}
-          <Link to="/privacy">Privacy Policy</Link>.
-        </p>
-      </form>
+          <div className={styles.field}>
+            <label htmlFor="password" className={styles.label}>
+              Password <span className={styles.labelHint}>(8+ characters)</span>
+            </label>
+            <div className={styles.inputWrap}>
+              <span className={styles.inputIcon}>
+                <Lock size={18} />
+              </span>
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="new-password"
+                className={`${styles.input} ${styles.inputWithIcon}`}
+                placeholder="Choose a strong password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={sending}
+                minLength={8}
+                required
+                style={{ paddingRight: 44 }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className={styles.eyeBtn}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
 
-      {/* Social-proof strip: mixes a user-base claim, breadth-of-coverage,
-          and a star rating to address the three things first-time visitors
-          consider - is anyone using it? is it serious? is it good? */}
+          <button
+            type="submit"
+            className={`${styles.btn} ${styles.btnPrimary} ${styles.btnLarge} ${styles.btnBlock}`}
+            disabled={sending}
+            aria-busy={sending}
+            onClick={() =>
+              track('marketing_cta_clicked', {
+                location: 'join_inline_form',
+                target: 'signup',
+                variant: COPY_VARIANT,
+                flow: 'fast',
+              })
+            }
+          >
+            {sending ? (
+              <>
+                <Loader2 size={18} className={styles.spin} />
+                Creating your account…
+              </>
+            ) : (
+              <>
+                Reserve my 100 free credits
+                <ArrowRight size={18} />
+              </>
+            )}
+          </button>
+
+          <p className={styles.secondaryNote} style={{ textAlign: 'center', marginTop: 4 }}>
+            By creating an account you agree to our{' '}
+            <Link to="/terms">Terms</Link> and{' '}
+            <Link to="/privacy">Privacy Policy</Link>.
+          </p>
+        </form>
+      )}
+
+      {/* Proof strip: only claims we can stand behind. The previous user
+          count and star rating were unverifiable and removed for v6. */}
       <div className={styles.proofStrip}>
         <div className={styles.proofItem}>
-          <Users size={16} />
+          <Globe size={16} />
           <div>
-            <strong>5,000+ fans</strong>
-            <span>signed up to date</span>
+            <strong>World Cup 2026</strong>
+            <span>Live commentary now</span>
           </div>
         </div>
         <div className={styles.proofItem}>
@@ -415,10 +485,10 @@ export default function Join() {
           </div>
         </div>
         <div className={styles.proofItem}>
-          <Star size={16} fill="currentColor" />
+          <ShieldCheck size={16} />
           <div>
-            <strong>4.8 / 5</strong>
-            <span>Average user rating</span>
+            <strong>No betting</strong>
+            <span>No ads, no wagering</span>
           </div>
         </div>
       </div>
@@ -454,17 +524,6 @@ export default function Join() {
             <strong>AI match predictions</strong>
             <span>
               Win/draw/away odds with a written analysis. Re-opens are free.
-            </span>
-          </div>
-        </li>
-        <li className={styles.featureItem}>
-          <span className={styles.featureIcon}>
-            <ShieldCheck size={20} />
-          </span>
-          <div className={styles.featureBody}>
-            <strong>Entertainment, not betting</strong>
-            <span>
-              No wagering, no odds markets, no ads.
             </span>
           </div>
         </li>
