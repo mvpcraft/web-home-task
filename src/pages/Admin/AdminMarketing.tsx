@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Mail, Send, Loader2, AlertCircle, CheckCircle2, FileText, Users,
+  Mail, Send, Loader2, AlertCircle, CheckCircle2, FileText, Users, LayoutTemplate,
 } from 'lucide-react'
 import AdminNav from './AdminNav'
 import {
@@ -53,6 +53,7 @@ export default function AdminMarketing() {
 
   const [emailsRaw, setEmailsRaw] = useState('')
   const [subject, setSubject] = useState(DEFAULT_SUBJECT)
+  const [template, setTemplate] = useState<'v1' | 'v2'>('v1')
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<SendResult | null>(null)
@@ -75,6 +76,7 @@ export default function AdminMarketing() {
     // Confirm before firing a blast - this hits real inboxes.
     const ok = window.confirm(
       `Send the marketing email to ${valid.length} recipient${valid.length === 1 ? '' : 's'}?\n\n` +
+        `Template: ${template.toUpperCase()}\n` +
         `Subject: ${subject || DEFAULT_SUBJECT}`,
     )
     if (!ok) return
@@ -89,7 +91,7 @@ export default function AdminMarketing() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${session.token}`,
         },
-        body: JSON.stringify({ emails: valid, subject: subject.trim() || undefined }),
+        body: JSON.stringify({ emails: valid, subject: subject.trim() || undefined, template }),
       })
 
       if (res.status === 401 || res.status === 403) {
@@ -124,10 +126,10 @@ export default function AdminMarketing() {
         <div>
           <h1 className={styles.dashTitle}>Marketing email</h1>
           <p className={styles.dashSub}>
-            Send the current <code>marketing_email.html</code> template to a list
-            of recipients via Resend. The template lives in{' '}
-            <code>play_by_play_backend/templates/marketing_email.html</code> -
-            edit that file to update the copy.
+            Pick a template (v1 or v2) and send it to a list of recipients via
+            Resend. Templates live in{' '}
+            <code>play_by_play_backend/templates/</code> - edit those files to
+            update the copy.
           </p>
         </div>
       </header>
@@ -191,6 +193,28 @@ export default function AdminMarketing() {
         </div>
 
         <label className={styles.field}>
+          <span className={styles.label}>
+            <LayoutTemplate size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />
+            Template
+          </span>
+          <select
+            className={styles.input}
+            value={template}
+            onChange={e => setTemplate(e.target.value as 'v1' | 'v2')}
+            disabled={sending}
+            style={{ colorScheme: 'dark', cursor: 'pointer' }}
+          >
+            <option value="v1">v1 — Original (feature grid)</option>
+            <option value="v2">v2 — Language-first (short)</option>
+          </select>
+          <span className={styles.recipientHint} style={{ marginTop: 6 }}>
+            Edit the files in <code>play_by_play_backend/templates/</code>:
+            {' '}<code>marketing_email.html</code> (v1),{' '}
+            <code>marketing_email_v2.html</code> (v2).
+          </span>
+        </label>
+
+        <label className={styles.field} style={{ marginTop: 16 }}>
           <span className={styles.label}>Subject</span>
           <span className={styles.inputWrap}>
             <span className={styles.inputIcon}>
